@@ -1,0 +1,50 @@
+# Environment variables
+backend/.env
+.env
+.flaskenv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+.next/
+out/
+.vercel
+
+# Uploads and temporary assets
+uploads/
+backend/uploads/
+frontend/public/uploads/
+*.log
+
+# Models (large binary files)
+*.h5
+*.pkl
+*.pb
+*.onnx
+*.weights
+*.tflite
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
