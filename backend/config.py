@@ -19,6 +19,7 @@ UPLOAD_FOLDER = "uploads"
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 GOOGLE_CLIENT_SECRET = (os.getenv("GOOGLE_CLIENT_SECRET") or "").strip().rstrip("`")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+BACKEND_URL = os.getenv("BACKEND_URL") # e.g. https://oralcare-ciek.onrender.com
 
 # SMTP (e.g. MailHog in Docker: host=localhost, port=1025, no auth)
 SMTP_HOST = os.getenv("SMTP_HOST", "localhost")

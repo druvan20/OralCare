@@ -6,7 +6,7 @@ import re
 import time
 import requests
 from urllib.parse import urlencode
-from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, FRONTEND_URL
+from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, FRONTEND_URL, BACKEND_URL
 from utils.jwt_utils import generate_token
 
 logger = logging.getLogger(__name__)
@@ -62,10 +62,11 @@ def google_login():
     if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
         return redirect(f"{FRONTEND_URL}/login?message=Google+sign-in+not+configured.+Add+GOOGLE_CLIENT_ID+and+GOOGLE_CLIENT_SECRET+to+.env")
     state = secrets.token_urlsafe(16)
-    # Store state in session or cookie if you need to verify on callback (for production use session)
+    base_url = BACKEND_URL.rstrip('/') if BACKEND_URL else request.url_root.rstrip('/')
+    redirect_uri = f"{base_url}/api/auth/google/callback"
     params = {
         "client_id": GOOGLE_CLIENT_ID,
-        "redirect_uri": f"{request.url_root.rstrip('/')}/api/auth/google/callback",
+        "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": "openid email profile",
         "state": state,
@@ -87,7 +88,8 @@ def google_callback():
     if not code:
         return redirect(f"{FRONTEND_URL}/login?message=Missing+authorization+code")
 
-    redirect_uri = f"{request.url_root.rstrip('/')}/api/auth/google/callback"
+    base_url = BACKEND_URL.rstrip('/') if BACKEND_URL else request.url_root.rstrip('/')
+    redirect_uri = f"{base_url}/api/auth/google/callback"
     data = {
         "code": code,
         "client_id": GOOGLE_CLIENT_ID,
