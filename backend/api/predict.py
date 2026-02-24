@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # ===== FIX PYTHON PATH =====
 PROJECT_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..")
+    os.path.join(os.path.dirname(__file__), "..")
 )
 sys.path.append(PROJECT_ROOT)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

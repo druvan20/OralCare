@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 
 # Fix path to access ml folder
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(BASE_DIR)
 
 from ml.image_model.predict_image import predict_image

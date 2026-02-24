@@ -16,3 +16,10 @@ flask-limiter
 scikit-learn
 opencv-python
 PyJWT
+flask
+flask-cors
+flask-talisman
+flask-limiter
+pymongo
+gunicorn
+certifi
