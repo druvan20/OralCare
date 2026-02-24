@@ -63,6 +63,10 @@ def google_login():
         return redirect(f"{FRONTEND_URL}/login?message=Google+sign-in+not+configured.+Add+GOOGLE_CLIENT_ID+and+GOOGLE_CLIENT_SECRET+to+.env")
     state = secrets.token_urlsafe(16)
     base_url = BACKEND_URL.rstrip('/') if BACKEND_URL else request.url_root.rstrip('/')
+    # Force https if we know we are on a secure domain
+    if BACKEND_URL and BACKEND_URL.startswith("https"):
+        base_url = base_url.replace("http://", "https://")
+        
     redirect_uri = f"{base_url}/api/auth/google/callback"
     params = {
         "client_id": GOOGLE_CLIENT_ID,
@@ -73,6 +77,7 @@ def google_login():
         "access_type": "offline",
         "prompt": "consent",
     }
+    logger.info(f"🚀 Initiating Google Login. Redirect URI: {redirect_uri}")
     return redirect(f"{GOOGLE_AUTH_URL}?{urlencode(params)}")
 
 
@@ -81,15 +86,25 @@ def google_callback():
     """Exchange code for tokens, get user info, create/find user, issue JWT, redirect to frontend."""
     if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
         return redirect(f"{FRONTEND_URL}/login?message=Google+sign-in+not+configured")
+
+    base_url = BACKEND_URL.rstrip('/') if BACKEND_URL else request.url_root.rstrip('/')
+    if BACKEND_URL and BACKEND_URL.startswith("https"):
+        base_url = base_url.replace("http://", "https://")
+
+    redirect_uri = f"{base_url}/api/auth/google/callback"
+    
+    logger.info(f"📥 Google Callback hit. Args: {dict(request.args)}")
+    logger.info(f"🔗 Using Redirect URI for exchange: {redirect_uri}")
+
     code = request.args.get("code")
     error = request.args.get("error")
     if error:
+        logger.error(f"❌ Google OAuth error: {error}")
         return redirect(f"{FRONTEND_URL}/login?message=Google+sign-in+cancelled+or+failed")
     if not code:
+        logger.warning("⚠️ No authorization code received in callback.")
         return redirect(f"{FRONTEND_URL}/login?message=Missing+authorization+code")
 
-    base_url = BACKEND_URL.rstrip('/') if BACKEND_URL else request.url_root.rstrip('/')
-    redirect_uri = f"{base_url}/api/auth/google/callback"
     data = {
         "code": code,
         "client_id": GOOGLE_CLIENT_ID,
