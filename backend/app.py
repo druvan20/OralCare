@@ -7,6 +7,7 @@ from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config import MONGO_URI, UPLOAD_FOLDER, FRONTEND_URL
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ✅ CONFIGURE LOGGING TO SUPPORT EMOJIS ON WINDOWS
 import sys
@@ -43,6 +44,9 @@ from api.ursol import ursol_bp
 
 # ✅ CREATE APP
 app = Flask(__name__)
+
+# Trust the headers sent by Render's load balancer
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Security Headers (Talisman)
 # We allow inline scripts for the dev environment, but enforce HTTPS/HSTS in production
