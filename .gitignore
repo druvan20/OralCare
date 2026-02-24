@@ -33,8 +33,8 @@ frontend/public/uploads/
 *.log
 
 # Models (large binary files)
-*.h5
-*.pkl
+# *.h5
+# *.pkl
 *.pb
 *.onnx
 *.weights
