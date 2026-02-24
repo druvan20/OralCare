@@ -3,8 +3,10 @@ import { useNavigate, Link, useSearchParams, useLocation } from "react-router-do
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../services/auth";
 import { API_BASE } from "../config";
+import axios from "axios";
 import { getTimeBasedGreeting } from "../components/AuthLayoutLeft";
-import { Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react";
+import { Mail, Lock, ArrowRight, ShieldCheck, RefreshCw } from "lucide-react";
+import Logo from "../components/Logo";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,6 +15,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [resending, setResending] = useState(false);
   const { user, loading: authLoading, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,10 +53,26 @@ export default function Login() {
     }
   }, [location.state, location.pathname, navigate]);
 
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail) return;
+    setResending(true);
+    try {
+      await axios.post(`${API_BASE}/api/auth/resend-verify`, { email: unverifiedEmail });
+      setSuccessMessage("Verification email resent! Check your inbox and spam folder.");
+      setUnverifiedEmail("");
+      setError("");
+    } catch (err) {
+      setError("Failed to resend email. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setUnverifiedEmail("");
     setLoading(true);
     try {
       const res = await loginUser({ email, password });
@@ -60,7 +80,7 @@ export default function Login() {
         if (remember) localStorage.setItem("oralcare-remember-email", email);
         else localStorage.removeItem("oralcare-remember-email");
 
-        login(res.data.token, res.data.user);
+        login(res.data.token, res.data.user, remember);
         if (!res.data.user.name) {
           navigate("/complete-profile");
         } else {
@@ -70,7 +90,13 @@ export default function Login() {
         setError("Login failed. Please try again.");
       }
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Invalid credentials.");
+      const data = err.response?.data;
+      if (data?.email_unverified) {
+        setUnverifiedEmail(data.email || email);
+        setError(data.message);
+      } else {
+        setError(data?.message || err.message || "Invalid credentials.");
+      }
     } finally {
       setLoading(false);
     }
@@ -78,9 +104,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-6 sm:p-10">
-      <div className="absolute top-10 left-10 flex items-center gap-2 font-bold text-2xl tracking-tight text-white pointer-events-none">
-        <ShieldCheck className="h-8 w-8 text-violet-400" />
-        <span>OralCare<span className="text-violet-400 font-light ml-1">AI</span></span>
+      <div className="absolute top-10 left-10 pointer-events-none">
+        <Logo className="h-10 w-10" />
       </div>
 
       <div className="glass-card w-full max-w-[460px] animate-in fade-in zoom-in duration-500">
@@ -126,7 +151,18 @@ export default function Login() {
                 role="alert"
                 aria-live="assertive"
               >
-                {error}
+                <p>{error}</p>
+                {unverifiedEmail && (
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={resending}
+                    className="mt-3 flex items-center gap-2 text-xs font-bold text-red-600 dark:text-red-400 underline underline-offset-2 hover:no-underline disabled:opacity-50"
+                  >
+                    <RefreshCw className={`h-3 w-3 ${resending ? 'animate-spin' : ''}`} />
+                    {resending ? "Sending..." : "Resend Verification Email"}
+                  </button>
+                )}
               </div>
             )}
 

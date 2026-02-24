@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchHistory } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import { API_BASE } from "../config";
 import { History as HistoryIcon, AlertCircle, Inbox, RefreshCw, WifiOff, BarChart3, TrendingUp, ArrowRight, Activity, Calendar, ShieldAlert } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
@@ -36,6 +37,7 @@ export default function History() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const load = useCallback(async () => {
     try {
@@ -46,7 +48,7 @@ export default function History() {
     } catch (err) {
       setError(getErrorMessage(err));
       if (err.response?.status === 401) {
-        localStorage.removeItem("token");
+        logout();
         setTimeout(() => navigate("/login"), 2000);
       }
     } finally {
@@ -143,7 +145,16 @@ export default function History() {
                   <BarChart data={chart} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <XAxis dataKey="label" mirror hide />
                     <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold' }} />
-                    <Tooltip cursor={{ fill: 'rgba(124, 58, 237, 0.05)' }} contentStyle={{ borderRadius: '16px', border: 'none', background: 'rgba(15, 23, 42, 0.9)', color: 'white' }} />
+                    <Tooltip
+                      cursor={{ fill: 'rgba(124, 58, 237, 0.05)' }}
+                      contentStyle={{
+                        borderRadius: '16px',
+                        border: 'none',
+                        background: 'var(--tw-bg-opacity, rgba(15, 23, 42, 0.9))',
+                        color: 'white',
+                        backdropFilter: 'blur(8px)'
+                      }}
+                    />
                     <Bar dataKey="score" radius={[8, 8, 8, 8]} barSize={24}>
                       {chart.map((entry, i) => (
                         <Cell key={i} fill={entry.highRisk ? "#f43f5e" : "#7c3aed"} />
@@ -166,7 +177,7 @@ export default function History() {
           </div>
 
           <div className="glass-card p-0 overflow-hidden">
-            <div className="flex items-center justify-between px-8 py-6 border-b border-white/10">
+            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 dark:border-white/10">
               <h3 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
                 <TrendingUp className="h-5 w-5 text-emerald-500" />
                 Processing Logs
@@ -182,7 +193,7 @@ export default function History() {
                     <th className="text-right py-6 px-8">Confidence Vector</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                   {history.map((item, idx) => (
                     <tr
                       key={idx}

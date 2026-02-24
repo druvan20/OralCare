@@ -16,6 +16,7 @@ import History from "./pages/History";
 import CompleteProfile from "./pages/CompleteProfile";
 
 import MainLayout from "./layouts/MainLayout";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -43,35 +44,37 @@ function ProtectedRoute({ children }) {
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/metadata-guide" element={<MetadataGuide />} />
+    <ErrorBoundary>
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/metadata-guide" element={<MetadataGuide />} />
 
-      {/* Auth Required */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/complete-profile" element={<CompleteProfile />} />
+        {/* Auth Required */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/complete-profile" element={<CompleteProfile />} />
 
-        <Route element={<MainLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/predict">
-            <Route index element={<Predict />} />
-            <Route path="metadata" element={<Metadata />} />
-            <Route path="results" element={<Results />} />
+            <Route path="/predict">
+              <Route index element={<Predict />} />
+              <Route path="metadata" element={<Metadata />} />
+              <Route path="results" element={<Results />} />
+            </Route>
+
+            <Route path="/history" element={<History />} />
           </Route>
-
-          <Route path="/history" element={<History />} />
         </Route>
-      </Route>
 
-      {/* 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </ErrorBoundary>
   );
 }

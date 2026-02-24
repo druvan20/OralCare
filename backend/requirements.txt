@@ -1,5 +1,6 @@
 flask
 flask-cors
+gunicorn
 pymongo
 python-dotenv
 bcrypt
@@ -7,3 +8,11 @@ requests
 certifi
 twilio
 google-genai
+pandas
+numpy
+tensorflow
+flask-talisman
+flask-limiter
+scikit-learn
+opencv-python
+PyJWT

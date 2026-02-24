@@ -28,8 +28,8 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      // 1. Check direct localStorage
-      let token = localStorage.getItem("token");
+      // 1. Check direct localStorage or sessionStorage
+      let token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
       // 2. Check hash (OAuth redirect)
       const hash = window.location.hash;
@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
         const hashToken = params.get("token");
         if (hashToken) {
           token = hashToken;
+          // By default, OAuth tokens are treated as persistent since they come from external flow
           localStorage.setItem("token", token);
           window.history.replaceState(null, "", window.location.pathname);
         }
@@ -53,13 +54,18 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  const login = (token, userData) => {
-    localStorage.setItem("token", token);
+  const login = (token, userData, persist = false) => {
+    if (persist) {
+      localStorage.setItem("token", token);
+    } else {
+      sessionStorage.setItem("token", token);
+    }
     setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setUser(null);
   };
 

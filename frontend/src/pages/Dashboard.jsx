@@ -200,11 +200,11 @@ export default function Dashboard() {
                             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                             <span className="terminal-accent text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">Live Network Feed</span>
                         </div>
-                        <div className="h-4 w-px bg-white/10" />
+                        <div className="h-4 w-px bg-slate-200 dark:bg-white/10" />
                         <div className="flex-1 overflow-hidden">
                             <div className="inline-block animate-marquee whitespace-nowrap">
                                 {newsBulletins.map((item, i) => (
-                                    <span key={i} className="mx-12 text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">
+                                    <span key={i} className="mx-12 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 italic">
                                         {item}
                                     </span>
                                 ))}
@@ -224,7 +224,7 @@ export default function Dashboard() {
                             OralCare<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Sol.AI</span>
                         </h1>
-                        <p className="text-lg font-medium text-slate-500 max-w-xl italic border-l-2 border-white/10 pl-6">
+                        <p className="text-lg font-medium text-slate-500 dark:text-slate-400 max-w-xl italic border-l-2 border-slate-200 dark:border-white/10 pl-6">
                             Welcome back, Specialist {user?.name?.split(' ')[0]}. Automated biopsy tracking and neural inference systems are active.
                         </p>
                     </div>
@@ -232,12 +232,12 @@ export default function Dashboard() {
                     <div className="flex gap-4">
                         <button
                             onClick={() => navigate("/predict")}
-                            className="group relative overflow-hidden bg-white text-slate-950 px-12 py-6 font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)]"
+                            className="group relative overflow-hidden bg-slate-900 dark:bg-white text-white dark:text-slate-950 px-12 py-6 font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)] shadow-xl shadow-indigo-500/10"
                         >
                             <div className="flex items-center gap-3 relative z-10">
                                 <Zap className="h-4 w-4 fill-current" /> Initialize New Scan
                             </div>
-                            <div className="absolute inset-0 bg-indigo-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 bg-indigo-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
                         </button>
                     </div>
                 </header>
@@ -260,17 +260,17 @@ export default function Dashboard() {
                                             {stat.action ? (
                                                 <ChevronRightIcon className="h-5 w-5 text-emerald-500 group-hover:translate-x-1 transition-transform" />
                                             ) : (
-                                                <div className="h-1.5 w-8 rounded-full bg-white/5 overflow-hidden">
+                                                <div className="h-1.5 w-8 rounded-full bg-slate-100 dark:bg-white/5 overflow-hidden">
                                                     <div className="h-full bg-indigo-500 w-2/3 animate-pulse" />
                                                 </div>
                                             )}
                                         </div>
                                         <div>
                                             <p className="terminal-accent text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-1">{stat.label}</p>
-                                            <h4 className="text-5xl font-black italic tracking-tighter italic">{stat.value}</h4>
+                                            <h4 className="text-5xl font-black italic tracking-tighter text-slate-900 dark:text-white">{stat.value}</h4>
                                         </div>
-                                        <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-600 italic">{stat.sub}</span>
+                                        <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-600 italic">{stat.sub}</span>
                                             {stat.action ? (
                                                 <span className="text-[9px] font-black uppercase text-emerald-500 tracking-widest group-hover:underline">Explore</span>
                                             ) : (
@@ -317,11 +317,16 @@ export default function Dashboard() {
                                                 <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-slate-200 dark:text-white/5" vertical={false} />
                                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 800 }} dy={10} />
                                         <YAxis hide />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '12px' }}
+                                            contentStyle={{
+                                                backgroundColor: 'var(--tw-bg-opacity, #0f172a)',
+                                                borderColor: 'rgba(255,255,255,0.1)',
+                                                borderRadius: '16px',
+                                                backdropFilter: 'blur(10px)'
+                                            }}
                                             itemStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }}
                                         />
                                         <Area type="monotone" dataKey="score" stroke="#8b5cf6" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" />
@@ -333,25 +338,41 @@ export default function Dashboard() {
 
                         {/* Recent Biopsy Extraction Vault */}
                         <div className="bio-hologram overflow-hidden">
-                            <div className="px-12 py-8 bg-white/5 border-b border-white/5 flex items-center justify-between">
+                            <div className="px-12 py-8 bg-slate-50 dark:bg-white/5 border-b border-slate-200 dark:border-white/5 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <HistoryIcon className="h-5 w-5 text-indigo-500" />
-                                    <h3 className="text-sm font-black italic tracking-widest uppercase italic">Diagnostic Record Buffers</h3>
+                                    <h3 className="text-sm font-black italic tracking-widest uppercase italic text-slate-900 dark:text-white">Diagnostic Record Buffers</h3>
                                 </div>
-                                <button onClick={() => navigate("/history")} className="text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-white transition-colors">View All Acquisitions</button>
+                                <button onClick={() => navigate("/history")} className="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-white transition-colors">View All Acquisitions</button>
                             </div>
-                            <div className="divide-y divide-white/5">
+                            <div className="divide-y divide-slate-100 dark:divide-white/5">
                                 {loading ? (
                                     Array(3).fill(0).map((_, i) => <div key={i} className="p-12 animate-pulse bg-white/5 m-1" />)
                                 ) : history.length > 0 ? (
                                     history.map((h, i) => (
-                                        <div key={i} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-white/5 transition-all cursor-pointer group" onClick={() => {
+                                        <div key={i} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-slate-50/50 dark:hover:bg-white/10 transition-all cursor-pointer group" onClick={() => {
                                             sessionStorage.setItem("predictionResult", JSON.stringify(h));
                                             navigate("/predict/results");
                                         }}>
                                             <div className="flex items-center gap-8">
-                                                <div className="relative h-20 w-20 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0">
-                                                    <img src={h.image_url ? `${API_BASE}${h.image_url}` : "/placeholder.png"} alt="Scan" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                                                <div className="relative h-20 w-20 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-200 dark:ring-white/10 shrink-0">
+                                                    {h.image_url ? (
+                                                        <img
+                                                            src={`${API_BASE}${h.image_url}`}
+                                                            alt="Scan"
+                                                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                                e.currentTarget.nextElementSibling.style.display = 'flex';
+                                                            }}
+                                                        />
+                                                    ) : null}
+                                                    <div
+                                                        className="absolute inset-0 bg-slate-100 dark:bg-slate-800 items-center justify-center border border-slate-200 dark:border-slate-800"
+                                                        style={{ display: h.image_url ? 'none' : 'flex' }}
+                                                    >
+                                                        <svg className="h-8 w-8 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /><path d="M11 8v6M8 11h6" /></svg>
+                                                    </div>
                                                     <div className="absolute inset-0 bg-violet-600/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <Eye className="h-6 w-6 text-white" />
                                                     </div>
@@ -363,15 +384,15 @@ export default function Dashboard() {
                                                         </span>
                                                         <span className="text-[10px] text-slate-600 font-bold uppercase tabular-nums">ID: AI-{h._id ? h._id.substring(0, 6).toUpperCase() : "XXXXXX"}</span>
                                                     </div>
-                                                    <h4 className="text-xl font-black italic tracking-tighter leading-tight group-hover:text-indigo-400 transition-colors uppercase italic">{new Date(h.timestamp || h.createdAt).toLocaleDateString()} Telemetry</h4>
+                                                    <h4 className="text-xl font-black italic tracking-tighter leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors uppercase italic text-slate-900 dark:text-white">{new Date(h.timestamp || h.createdAt).toLocaleDateString()} Telemetry</h4>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-12">
                                                 <div className="text-right hidden sm:block">
                                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 italic">Confidence Vector</p>
-                                                    <p className="text-2xl font-black italic tabular-nums text-white">{(h.final_score * 100).toFixed(1)}%</p>
+                                                    <p className="text-2xl font-black italic tabular-nums text-slate-900 dark:text-white">{(h.final_score * 100).toFixed(1)}%</p>
                                                 </div>
-                                                <div className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-slate-950 transition-all">
+                                                <div className="h-10 w-10 rounded-full border border-slate-200 dark:border-white/10 flex items-center justify-center group-hover:bg-slate-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-slate-950 transition-all text-slate-400">
                                                     <ChevronRight className="h-5 w-5" />
                                                 </div>
                                             </div>
@@ -435,7 +456,7 @@ export default function Dashboard() {
                                 ) : clinics.length > 0 ? (
                                     <div className="space-y-4 max-h-full overflow-y-auto pr-2 custom-scrollbar relative z-10">
                                         {clinics.map((clinic, idx) => (
-                                            <div key={clinic.id} className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-all group relative overflow-hidden hover:bg-white/[0.07]">
+                                            <div key={clinic.id} className="p-6 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-indigo-500/30 transition-all group relative overflow-hidden hover:bg-slate-100 dark:hover:bg-white/[0.07]">
                                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
                                                     <MapPin className="h-16 w-16 text-indigo-500" />
                                                 </div>
@@ -457,7 +478,7 @@ export default function Dashboard() {
                                                     <span className="text-[10px] font-black text-indigo-400/80 italic uppercase tabular-nums">{clinic.distance}km</span>
                                                 </div>
 
-                                                <h5 className="text-lg font-black italic tracking-tighter leading-tight mb-2 uppercase italic group-hover:text-white transition-colors">
+                                                <h5 className="text-lg font-black italic tracking-tighter leading-tight mb-2 uppercase italic text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-white transition-colors">
                                                     {clinic.name}
                                                 </h5>
 
@@ -494,14 +515,14 @@ export default function Dashboard() {
                                             <div className="h-56 w-56 rounded-full border-2 border-dashed border-indigo-500/10 flex items-center justify-center mx-auto animate-[spin_20s_linear_infinite]">
                                                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500/5 to-transparent animate-pulse" />
                                             </div>
-                                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 bg-slate-950 rounded-full border border-indigo-500/20 shadow-2xl group-hover/radar:border-indigo-500/50 transition-all">
+                                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 bg-white dark:bg-slate-950 rounded-full border border-indigo-500/20 shadow-2xl group-hover/radar:border-indigo-500/50 transition-all">
                                                 <Radio className="h-12 w-12 text-indigo-500 animate-pulse" />
                                             </div>
                                             {/* Pulsing rings */}
                                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full border border-indigo-500/10 rounded-full animate-ping opacity-20" />
                                         </div>
 
-                                        <h4 className="text-2xl font-black italic tracking-tighter uppercase italic text-white mb-3">GPS Passive Mode</h4>
+                                        <h4 className="text-2xl font-black uppercase italic tracking-tighter mb-4 text-slate-400 dark:text-white uppercase italic">GPS Passive Mode</h4>
                                         <div className="space-y-4 max-w-xs mx-auto mb-10">
                                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 leading-relaxed italic">
                                                 Satellite telemetry inactive. Local oncology nodes are currently masked in the regional spectrum.
@@ -539,9 +560,9 @@ export default function Dashboard() {
                                     <div key={i}>
                                         <div className="flex justify-between items-end mb-3">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 italic">{sys.label}</span>
-                                            <span className="text-sm font-black tabular-nums">{sys.val}</span>
+                                            <span className="text-sm font-black tabular-nums text-slate-900 dark:text-white">{sys.val}</span>
                                         </div>
-                                        <div className="h-1 rounded-full bg-white/5 overflow-hidden">
+                                        <div className="h-1 rounded-full bg-slate-100 dark:bg-white/5 overflow-hidden">
                                             <div className={`h-full ${sys.color} w-3/4 animate-pulse duration-1000`} />
                                         </div>
                                     </div>

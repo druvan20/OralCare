@@ -94,16 +94,46 @@ def preprocess_image(img_path):
 def predict_metadata(metadata_dict):
     """
     Selects exactly 11 features in the order they were trained.
-    Ignores extra fields like 'patientName'.
+    Maps internal keys to the human-readable strings expected by the Scikit-Learn model.
     """
+    # Exact mapping from frontend/internal keys to the training dataset column names
+    mapping = {
+        "tobacco": "Tobacco Use",
+        "alcohol": "Alcohol Consumption",
+        "betel": "Betel Quid Use",
+        "hpv": "HPV Infection",
+        "hygiene": "Poor Oral Hygiene",
+        "lesions": "Oral Lesions",
+        "bleeding": "Unexplained Bleeding",
+        "swallowing": "Difficulty Swallowing",
+        "patches": "White or Red Patches in Mouth",
+        "family": "Family History of Cancer",
+        "age": "Age"
+    }
+    
+    # Order must match exactly: binary_cols + ["Age"] in train_metadata_model.py
     feature_keys = [
         "tobacco", "alcohol", "betel", "hpv", "hygiene", 
         "lesions", "bleeding", "swallowing", "patches", "family", "age"
     ]
+    
     try:
-        # Convert identified features to float, defaulting to 0.0 for missing numerical data
-        values = [float(metadata_dict.get(key, 0)) for key in feature_keys]
-        df = pd.DataFrame([values], columns=feature_keys)
+        # Create a dictionary with model-standard keys
+        processed_data = {}
+        for internal_key, model_key in mapping.items():
+            val = metadata_dict.get(internal_key, 0)
+            # Ensure it's numeric
+            try:
+                processed_data[model_key] = float(val)
+            except (TypeError, ValueError):
+                processed_data[model_key] = 0.0
+        
+        # Create DataFrame with model-standard columns in order
+        model_columns = [mapping[k] for k in feature_keys]
+        values = [processed_data[col] for col in model_columns]
+        
+        df = pd.DataFrame([values], columns=model_columns)
+        
         model = get_metadata_model()
         prob = model.predict_proba(df)[0][1]
         return float(prob)

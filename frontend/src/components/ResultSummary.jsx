@@ -1,6 +1,6 @@
 export default function ResultSummary({ result }) {
   return (
-    <div className="glass-card !bg-white/50 dark:!bg-slate-900/40 !p-8 h-full border-none shadow-none">
+    <div className="glass-card !bg-slate-50 dark:!bg-slate-900/40 !p-8 h-full border-none shadow-none">
       <h4 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-8 flex items-center gap-2">
         <div className="h-1 w-4 bg-violet-500 rounded-full" />
         Model Breakdown

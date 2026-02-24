@@ -60,14 +60,14 @@ export default function UrSolChat() {
                     onClick={() => setIsOpen(true)}
                     className="h-16 w-16 rounded-3xl bg-violet-600 text-white shadow-2xl shadow-violet-600/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all animate-bounce duration-300 group relative"
                 >
-                    <div className="absolute -top-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse" />
+                    <div className="absolute -top-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-950 animate-pulse" />
                     <MessageSquare className="h-7 w-7 rotate-3" />
                     <div className="absolute -left-28 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                         UrSol AI Online
                     </div>
                 </button>
             ) : (
-                <div className="w-[380px] h-[550px] glass rounded-[2.5rem] shadow-[-20px_20px_60px_rgba(0,0,0,0.2)] border border-white/20 flex flex-col overflow-hidden animate-in slide-in-from-right-8 fade-in duration-500">
+                <div className="w-[380px] h-[550px] glass rounded-[2.5rem] shadow-2xl shadow-slate-900/10 dark:shadow-[-20px_20px_60px_rgba(0,0,0,0.4)] border border-slate-200 dark:border-white/20 flex flex-col overflow-hidden animate-in slide-in-from-right-8 fade-in duration-500">
                     {/* Header */}
                     <div className="p-6 bg-gradient-to-br from-violet-600 to-indigo-700 text-white flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -101,8 +101,8 @@ export default function UrSolChat() {
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
                             >
                                 <div className={`max-w-[85%] p-4 rounded-3xl text-sm leading-relaxed ${msg.role === 'user'
-                                        ? 'bg-violet-600 text-white rounded-tr-none shadow-lg'
-                                        : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 rounded-tl-none border border-slate-200/50 dark:border-white/5'
+                                    ? 'bg-violet-600 text-white rounded-tr-none shadow-lg shadow-violet-600/20'
+                                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 rounded-tl-none border border-slate-100 dark:border-white/5'
                                     }`}>
                                     <p dangerouslySetInnerHTML={{ __html: msg.content }} />
                                 </div>
@@ -110,7 +110,7 @@ export default function UrSolChat() {
                         ))}
                         {isTyping && (
                             <div className="flex justify-start">
-                                <div className="bg-slate-100 dark:bg-slate-800/80 p-4 rounded-3xl rounded-tl-none flex gap-1 items-center h-10 border border-slate-200/50">
+                                <div className="bg-slate-100 dark:bg-slate-800/80 p-4 rounded-3xl rounded-tl-none flex gap-1 items-center h-10 border border-slate-100 dark:border-white/5">
                                     <div className="h-1 w-1 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
                                     <div className="h-1 w-1 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
                                     <div className="h-1 w-1 bg-slate-400 rounded-full animate-bounce" />
@@ -126,7 +126,7 @@ export default function UrSolChat() {
                                 <button
                                     key={idx}
                                     onClick={() => handleChipClick(chip.action)}
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 transition-all hover:bg-violet-600 hover:text-white hover:border-violet-600 whitespace-nowrap"
+                                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-all hover:bg-violet-600 hover:text-white hover:border-violet-600 whitespace-nowrap"
                                 >
                                     <chip.icon className="h-3 w-3" /> {chip.label}
                                 </button>
@@ -145,7 +145,7 @@ export default function UrSolChat() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask UrSol anything..."
-                                className="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                                className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all"
                             />
                             <button
                                 type="submit"

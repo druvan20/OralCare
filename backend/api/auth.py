@@ -268,6 +268,15 @@ def login():
             logger.warning(f"❌ Login failed: Incorrect password for '{data['email']}'")
             return jsonify({"message": "Invalid credentials"}), 401
 
+        # Block unverified accounts
+        if not user.get("email_verified", False):
+            logger.warning(f"⚠️ Login blocked: email not verified for '{data['email']}'")
+            return jsonify({
+                "message": "Please verify your email before logging in. Check your inbox or resend the verification link.",
+                "email_unverified": True,
+                "email": user.get("email", "")
+            }), 403
+
         token = generate_token(str(user["_id"]))
         return jsonify({
             "token": token,

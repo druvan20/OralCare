@@ -36,7 +36,7 @@ export default function Predict() {
             Specimen<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Acquisition</span>
           </h1>
-          <p className="mt-4 text-slate-400 font-medium max-w-md mx-auto italic border-l-2 border-violet-500/30 pl-6">
+          <p className="mt-4 text-slate-500 dark:text-slate-400 font-medium max-w-md mx-auto italic border-l-2 border-violet-500/30 pl-6">
             Establishing high-fidelity pixel protocols for deep-learning oral analysis. Ensure balanced luminosity.
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function Predict() {
               <button
                 onClick={handleNext}
                 disabled={!image}
-                className="group relative overflow-hidden bg-white text-slate-900 px-10 py-5 font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 disabled:opacity-50 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)]"
+                className="group relative overflow-hidden bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 disabled:opacity-50 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)] shadow-xl shadow-indigo-500/10"
               >
                 <div className="flex items-center justify-center gap-4 relative z-10">
                   Initialize Sync <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
@@ -71,15 +71,15 @@ export default function Predict() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <div className="flex items-center gap-6 px-8 py-4 bg-white/5 border border-white/5 rounded-full backdrop-blur-md">
+          <div className="flex items-center gap-6 px-8 py-4 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-full backdrop-blur-md">
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Optics: OK</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Optics: OK</span>
             </div>
-            <div className="h-3 w-px bg-white/10" />
+            <div className="h-3 w-px bg-slate-200 dark:bg-white/10" />
             <div className="flex items-center gap-2">
               <Radio className="h-3 w-3 text-violet-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Link: Stable</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Link: Stable</span>
             </div>
           </div>
         </div>

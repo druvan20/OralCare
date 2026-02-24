@@ -3,7 +3,10 @@ from flask_cors import CORS
 from pymongo import MongoClient
 import os
 import logging
-from config import MONGO_URI, UPLOAD_FOLDER
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from config import MONGO_URI, UPLOAD_FOLDER, FRONTEND_URL
 
 # ✅ CONFIGURE LOGGING TO SUPPORT EMOJIS ON WINDOWS
 import sys
@@ -38,10 +41,25 @@ from api.predict import predict_bp
 from api.history import history_bp
 from api.ursol import ursol_bp
 
-# ✅ CREATE APP FIRST
+# ✅ CREATE APP
 app = Flask(__name__)
-# In production, specify exact origins instead of wildcard or local-only
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+# Security Headers (Talisman)
+# We allow inline scripts for the dev environment, but enforce HTTPS/HSTS in production
+Talisman(app, content_security_policy=None) 
+
+# Rate Limiting (Limiter)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+)
+
+# CORS hardening
+# Use FRONTEND_URL from .env if available, otherwise allow localhost in dev
+cors_origin = FRONTEND_URL if FRONTEND_URL else "*"
+CORS(app, resources={r"/api/*": {"origins": cors_origin}}, supports_credentials=True)
 
 # Create uploads folder
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

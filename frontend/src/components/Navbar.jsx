@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { LayoutDashboard, ScanLine, History, LogOut, User } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -11,10 +12,9 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-5xl px-4 sm:px-6">
-      <div className="glass flex h-16 items-center justify-between rounded-2xl px-6 shadow-xl shadow-slate-900/10">
-        <NavLink to="/dashboard" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-          <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">OralCare</span>
-          <span className="text-slate-400 font-light">AI</span>
+      <div className="glass flex h-16 items-center justify-between rounded-2xl px-6 shadow-xl shadow-slate-900/5 dark:shadow-none">
+        <NavLink to="/dashboard" className="transition-transform active:scale-95">
+          <Logo className="h-8 w-8" />
         </NavLink>
 
         <div className="flex items-center gap-2">

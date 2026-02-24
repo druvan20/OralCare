@@ -195,7 +195,7 @@ export default function ImageUploadCard({ image, setImage }) {
         <button
           type="button"
           onClick={() => setMode("upload")}
-          className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${mode === 'upload' ? 'bg-white dark:bg-slate-700 text-violet-600 shadow-md' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 dark:hover:bg-slate-700/30'}`}
+          className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${mode === 'upload' ? 'bg-slate-900 dark:bg-slate-700 text-white shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-700/30'}`}
         >
           <UploadCloud className="h-4 w-4" /> LOCAL FILE
         </button>
@@ -205,7 +205,7 @@ export default function ImageUploadCard({ image, setImage }) {
             setCameraError(null); // Reset error on explicit click
             setMode("camera");
           }}
-          className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${mode === 'camera' ? 'bg-white dark:bg-slate-700 text-violet-600 shadow-md' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 dark:hover:bg-slate-700/30'}`}
+          className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${mode === 'camera' ? 'bg-slate-900 dark:bg-slate-700 text-white shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white/50 dark:hover:bg-slate-700/30'}`}
         >
           <Camera className="h-4 w-4" /> CLINICAL CAMERA
         </button>
@@ -214,8 +214,8 @@ export default function ImageUploadCard({ image, setImage }) {
       <div className="p-8">
         {!image ? (
           mode === "upload" ? (
-            <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700/50 rounded-3xl h-64 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/20 hover:border-violet-400 transition-all group">
-              <div className="h-16 w-16 rounded-2xl bg-violet-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700/50 rounded-3xl h-64 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/20 hover:border-violet-400 transition-all group">
+              <div className="h-16 w-16 rounded-2xl bg-violet-500/10 dark:bg-violet-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <UploadCloud className="w-8 h-8 text-violet-600" />
               </div>
               <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Drag and drop specimen</p>
@@ -313,7 +313,7 @@ export default function ImageUploadCard({ image, setImage }) {
           )
         ) : (
           <div className="animate-in zoom-in-95 duration-300">
-            <div className="flex items-center gap-6 p-6 bg-emerald-500/5 border border-emerald-500/20 rounded-3xl relative">
+            <div className="flex items-center gap-6 p-6 bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 rounded-3xl relative">
               <div className="relative h-32 w-32 shrink-0">
                 <img src={URL.createObjectURL(image)} alt="Preview" className="w-full h-full object-cover rounded-2xl shadow-xl ring-2 ring-emerald-500/20" />
                 <div className="absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full p-1.5 shadow-lg">
@@ -321,15 +321,15 @@ export default function ImageUploadCard({ image, setImage }) {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 text-emerald-600 font-black text-[10px] uppercase tracking-widest mb-1">
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest mb-1">
                   <Zap className="h-3 w-3" /> Specimen Verified
                 </div>
-                <h4 className="font-black text-xl text-slate-900 dark:text-white truncate tracking-tight">{image.name}</h4>
+                <h4 className="font-black text-xl text-slate-900 dark:text-white truncate tracking-tight uppercase italic">{image.name}</h4>
                 <p className="text-sm font-bold text-slate-400 mt-1 uppercase tracking-tighter">{(image.size / 1024).toFixed(1)} KB Processing Units</p>
                 <button
                   type="button"
                   onClick={() => setImage(null)}
-                  className="mt-4 px-5 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-2"
+                  className="mt-4 px-5 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-2"
                 >
                   <RefreshCcw className="h-3 w-3" /> Replace Specimen
                 </button>
@@ -409,7 +409,7 @@ export default function ImageUploadCard({ image, setImage }) {
                 </div>
               </div>
 
-              <div className="p-6 bg-slate-900 flex items-center justify-between">
+              <div className="p-6 bg-slate-950 flex items-center justify-between">
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                   <Crosshair className="h-3 w-3 text-violet-500" /> Area Selected: {crop.width}x{crop.height}%
                 </p>
@@ -439,4 +439,3 @@ export default function ImageUploadCard({ image, setImage }) {
     </div>
   );
 }
-

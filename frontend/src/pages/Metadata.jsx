@@ -73,7 +73,7 @@ export default function Metadata() {
             Patient<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Metadata</span>
           </h1>
-          <p className="mt-4 text-slate-600 dark:text-slate-400 font-medium max-w-sm mx-auto italic">
+          <p className="mt-4 text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto italic">
             Synchronizing clinical data factors with pixel acquisition for 98.4% diagnostic precision.
           </p>
         </div>
@@ -82,9 +82,9 @@ export default function Metadata() {
           <Stepper step={2} />
 
           <div className="mt-12 p-8 lg:p-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-6 rounded-2xl bg-violet-600/5 border border-white/5 mb-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-6 rounded-2xl bg-slate-50 dark:bg-violet-600/5 border border-slate-100 dark:border-white/5 mb-12">
               <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center text-violet-500">
+                <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-violet-500">
                   <BookOpen className="h-6 w-6" />
                 </div>
                 <div>
@@ -92,14 +92,14 @@ export default function Metadata() {
                   <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Decrypt factor definitions for accurate telemetry.</p>
                 </div>
               </div>
-              <Link to="/metadata-guide" state={{ fromMetadata: true, ...state }} className="btn-secondary py-3 px-8 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 border-white/10">
+              <Link to="/metadata-guide" state={{ fromMetadata: true, ...state }} className="btn-secondary py-3 px-8 text-[10px] font-black uppercase tracking-[0.2em] border-slate-200 dark:border-white/10">
                 Launch Field Guide
               </Link>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {fields.map((f) => (
-                <div key={f.key} className={`holographic !p-6 border-white/5 group relative overflow-hidden transition-all hover:border-violet-500/40 ${f.key === "patientName" ? "md:col-span-2 lg:col-span-4 mb-4 bg-white/5" : ""
+                <div key={f.key} className={`holographic !p-6 border-slate-200 dark:border-white/5 group relative overflow-hidden transition-all hover:border-violet-500/40 ${f.key === "patientName" ? "md:col-span-2 lg:col-span-4 mb-4 bg-slate-50/50 dark:bg-white/5" : ""
                   }`}>
                   <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-400 mb-3 group-focus-within:text-violet-400 transition-colors">
                     {f.label}
