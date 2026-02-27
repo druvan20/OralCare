@@ -57,27 +57,17 @@ def get_cors_origins():
     origins = [url.strip().rstrip('/') for url in FRONTEND_URL.split(",")] if FRONTEND_URL else []
     if "http://localhost:5173" not in origins:
         origins.append("http://localhost:5173")
-    return origins
-
-def is_origin_allowed(origin):
-    if not origin:
-        return False
     
-    allowed_bases = get_cors_origins()
-    if origin in allowed_bases:
-        return True
-    
-    # regex for Vercel previews: oral-care-.*-druvvs-projects.vercel.app
-    # also support the user's specific preview: oral-care-lgo41edg7-druvvs-projects.vercel.app
-    if re.match(r"https://oral-care-.*\.vercel\.app", origin):
-        return True
-        
-    logger.info(f"🚩 CORS rejected origin: {origin}")
-    return False
+    # Add regex patterns for Vercel previews and production
+    return origins + [
+        re.compile(r"https://oral-care-.*\.vercel\.app"),
+        re.compile(r"https://oral-care-two\.vercel\.app"),
+        re.compile(r"https://oral-care-.*-druvvs-projects\.vercel\.app")
+    ]
 
 CORS(app, 
      resources={r"/api/*": {
-         "origins": is_origin_allowed,
+         "origins": get_cors_origins(),
          "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
          "allow_headers": ["Content-Type", "Authorization", "X-Requested-With", "Access-Control-Allow-Origin", "Origin", "Accept"]
      }}, 
