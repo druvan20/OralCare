@@ -30,10 +30,10 @@ def _send_verification_email(email, verification_link):
         text = f"Click the link below to verify your email:\n\n{link}\n\nThis link expires in 1 hour.\n\n— OralCare AI"
         html = f"<p>Click the link below to verify your email:</p><p><a href=\"{link}\">{link}</a></p><p>This link expires in 1 hour.</p><p>— OralCare AI</p>"
         send_email(email, subject, text, html)
-        return True
+        return True, None
     except Exception as e:
         logger.error(f"⚠️ Failed to send verification email to {email}: {e}")
-        return False
+        return False, str(e)
 
 
 def _send_otp_email(email, otp):
@@ -350,11 +350,16 @@ def resend_verify():
         upsert=True
     )
     verification_link = f"{request.url_root.rstrip('/')}/api/auth/verify-email?token={token}"
-    if _send_verification_email(email, verification_link):
+    success, error_msg = _send_verification_email(email, verification_link)
+    if success:
         logger.info(f"📧 Verification email sent to {email}")
         return jsonify({"message": "Verification email sent. Check your inbox and spam folder."}), 200
-    logger.error(f"❌ Resend failed for {email}. Check SMTP settings.")
-    return jsonify({"message": "Could not send email. Check SMTP settings."}), 503
+    
+    logger.error(f"❌ Resend failed for {email}: {error_msg}")
+    return jsonify({
+        "message": "Could not send email. Check SMTP settings.",
+        "debug_error": error_msg
+    }), 503
 
 
 @auth_bp.route("/verify-email", methods=["GET"])
