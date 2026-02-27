@@ -50,8 +50,26 @@ app.url_map.strict_slashes = False
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # CORS hardening - Must be before Talisman to handle preflights
-cors_origins = [url.strip() for url in FRONTEND_URL.split(",")] if FRONTEND_URL else "*"
-CORS(app, resources={r"/api/*": {"origins": cors_origins}}, supports_credentials=True)
+def parse_origins():
+    if not FRONTEND_URL:
+        return "*"
+    # Split by comma, strip whitespace, AND strip trailing slashes
+    origins = [url.strip().rstrip('/') for url in FRONTEND_URL.split(",")]
+    # Add common local development variants just in case
+    if "http://localhost:5173" not in origins:
+        origins.append("http://localhost:5173")
+    return origins
+
+cors_origins = parse_origins()
+logger.info(f"🔒 CORS Allowed Origins: {cors_origins}")
+
+CORS(app, 
+     resources={r"/api/*": {
+         "origins": cors_origins,
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+     }}, 
+     supports_credentials=True)
 
 # Security Headers (Talisman)
 # ONLY enable for production (Render/HTTPS). 
