@@ -21,7 +21,7 @@ export default function Predict() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-violet-500/30 rounded-full animate-radar" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-20 md:py-32 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="text-center mb-16 space-y-4">
           <div className="flex items-center justify-center gap-3">
             <span className="flex h-2 w-2 relative">
@@ -32,7 +32,7 @@ export default function Predict() {
               Diagnostic Intake Phase // 01
             </span>
           </div>
-          <h1 className="text-6xl font-black tracking-tighter italic uppercase leading-none">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic uppercase leading-none">
             Specimen<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Acquisition</span>
           </h1>
@@ -60,7 +60,7 @@ export default function Predict() {
               <button
                 onClick={handleNext}
                 disabled={!image}
-                className="group relative overflow-hidden bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-5 font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 disabled:opacity-50 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)] shadow-xl shadow-indigo-500/10"
+                className="group relative overflow-hidden bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 md:px-10 py-4 md:py-5 font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 disabled:opacity-50 [clip-path:polygon(0%_0%,100%_0%,90%_100%,0%_100%)] shadow-xl shadow-indigo-500/10"
               >
                 <div className="flex items-center justify-center gap-4 relative z-10">
                   Initialize Sync <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />

@@ -159,7 +159,7 @@ export default function Results() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border-2 border-dashed border-violet-500/10 rounded-full animate-radar" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-32 animate-in fade-in slide-in-from-bottom-4 duration-1000">
 
         {/* Results HUD Header */}
         <div className="text-center mb-16 space-y-4">
@@ -169,11 +169,11 @@ export default function Results() {
               Inference Complete // Final Output
             </span>
           </div>
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter italic uppercase leading-none">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black tracking-tighter italic uppercase leading-none">
             Diagnostic<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Analysis</span>
           </h1>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 font-medium max-w-md mx-auto italic border-r-2 border-violet-500/30 pr-6">
+          admissions          <p className="mt-4 text-slate-500 dark:text-slate-400 font-medium max-w-md mx-auto italic border-r-2 border-violet-500/30 pr-6">
             The SOL.AI engine has processed pixel acquisitions and clinical metadata. Assessment metrics verified.
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function Results() {
 
           <div className="p-8 lg:p-16">
             {/* Primary Result Cockpit */}
-            <div className={`relative rounded-[3rem] p-12 border-2 transition-all overflow-hidden mb-12 ${highRisk
+            <div className={`relative rounded-3xl md:rounded-[3rem] p-6 md:p-12 border-2 transition-all overflow-hidden mb-12 ${highRisk
               ? "border-red-500/30 bg-red-500/5 neon-shadow-red"
               : "border-emerald-500/30 bg-emerald-500/5 neon-shadow-emerald"
               }`}>
@@ -191,10 +191,10 @@ export default function Results() {
               <div className="absolute inset-0 pointer-events-none opacity-20 bg-gradient-to-b from-transparent via-slate-200/20 dark:via-white/5 to-transparent h-40 w-full animate-scanline z-0" />
 
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
-                <div className={`h-40 w-40 rounded-full flex items-center justify-center relative shrink-0 ${highRisk ? "bg-red-600 shadow-[0_0_60px_-10px_rgba(220,38,38,0.5)]" : "bg-emerald-600 shadow-[0_0_60px_-10px_rgba(16,185,129,0.5)]"
+                <div className={`h-28 w-28 md:h-40 md:w-40 rounded-full flex items-center justify-center relative shrink-0 ${highRisk ? "bg-red-600 shadow-[0_0_60px_-10px_rgba(220,38,38,0.5)]" : "bg-emerald-600 shadow-[0_0_60px_-10px_rgba(16,185,129,0.5)]"
                   }`}>
                   <div className="absolute inset-4 border-2 border-white/20 rounded-full animate-radar opacity-30" />
-                  <Award className="h-20 w-20 text-white" />
+                  <Award className="h-12 w-12 md:h-20 md:w-20 text-white" />
                 </div>
 
                 <div className="flex-1 text-center md:text-left space-y-4">
@@ -208,7 +208,7 @@ export default function Results() {
                       SOL.AI Verified
                     </span>
                   </div>
-                  <h2 className={`text-6xl md:text-8xl font-black italic tracking-tighter leading-none uppercase ${highRisk ? "text-red-500" : "text-emerald-500"
+                  <h2 className={`text-5xl md:text-8xl font-black italic tracking-tighter leading-none uppercase ${highRisk ? "text-red-500" : "text-emerald-500"
                     }`}>
                     {result.final_decision}
                   </h2>
@@ -230,7 +230,7 @@ export default function Results() {
 
             {/* Analytics HUD Grid */}
             <div className="grid gap-8 lg:grid-cols-12 mb-12">
-              <div className="lg:col-span-5 holographic !p-12 flex flex-col items-center justify-center border-white/5 group overflow-hidden">
+              <div className="lg:col-span-5 holographic !p-6 md:!p-12 flex flex-col items-center justify-center border-white/5 group overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                   <Activity className="h-24 w-24 text-violet-500" />
                 </div>
@@ -238,11 +238,11 @@ export default function Results() {
                 <p className="mt-8 terminal-accent text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">Risk Confidence Factor</p>
               </div>
               <div className="lg:col-span-7 holographic !p-0 border-slate-200 dark:border-white/5 flex flex-col justify-center">
-                <div className="px-10 py-6 border-b border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 flex items-center justify-between text-slate-900 dark:text-white">
-                  <h3 className="text-sm font-black uppercase tracking-widest italic leading-none">Telemetry Vector</h3>
+                <div className="px-6 md:px-10 py-6 border-b border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 flex items-center justify-between text-slate-900 dark:text-white">
+                  <h3 className="text-xs md:text-sm font-black uppercase tracking-widest italic leading-none">Telemetry Vector</h3>
                   <Binary className="h-4 w-4 text-violet-500" />
                 </div>
-                <div className="p-10">
+                <div className="p-6 md:p-10">
                   <ResultSummary result={result} />
                 </div>
               </div>

@@ -103,16 +103,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 sm:p-10">
-      <div className="absolute top-10 left-10 pointer-events-none">
-        <Logo className="h-10 w-10" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-10">
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 pointer-events-none">
+        <Logo className="h-8 w-8 md:h-10 md:w-10" />
       </div>
 
       <div className="glass-card w-full max-w-[460px] animate-in fade-in zoom-in duration-500">
-        <div className="text-center mb-10">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-violet-400/80 mb-2">{greeting}</p>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Welcome Back</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Empowering your health with AI screening</p>
+        <div className="text-center mb-8 md:mb-10 px-2">
+          <p className="text-[10px] md:text-sm font-bold uppercase tracking-[0.2em] text-violet-400/80 mb-2">{greeting}</p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Welcome Back</h1>
+          <p className="text-xs md:text-base text-slate-500 dark:text-slate-400 mt-2 font-medium italic">Empowering your health with AI screening</p>
         </div>
 
         <div className="space-y-4">

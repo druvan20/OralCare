@@ -8,9 +8,9 @@ export default function RecommendationBox({ decision }) {
 
   return (
     <div
-      className={`p-8 rounded-[2rem] border-2 transition-all relative overflow-hidden ${isHigh
-          ? "bg-red-500/5 border-red-500/20 text-red-900 dark:text-red-400"
-          : "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-400"
+      className={`p-6 md:p-8 rounded-3xl md:rounded-[2rem] border-2 transition-all relative overflow-hidden ${isHigh
+        ? "bg-red-500/5 border-red-500/20 text-red-900 dark:text-red-400"
+        : "bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-400"
         }`}
     >
       <div className="flex items-center gap-4 mb-4">

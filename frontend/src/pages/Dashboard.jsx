@@ -192,7 +192,7 @@ export default function Dashboard() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border border-violet-500/20 rounded-full animate-radar delay-1000" />
             </div>
 
-            <div className="relative z-10 max-w-[1600px] mx-auto px-6 py-24 lg:py-32">
+            <div className="relative z-10 max-w-[1600px] mx-auto px-4 md:px-6 py-12 lg:py-32">
                 {/* Global News Ticker */}
                 <div className="mb-12 bio-hologram !rounded-2xl border-indigo-500/20">
                     <div className="flex items-center gap-6 py-3 px-8">
@@ -220,7 +220,7 @@ export default function Dashboard() {
                             <ShieldCheck className="h-5 w-5 text-indigo-500" />
                             <span className="terminal-accent text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400">Secure Diagnostic Environment</span>
                         </div>
-                        <h1 className="text-6xl lg:text-8xl font-black tracking-tighter italic uppercase leading-tight">
+                        <h1 className="text-4xl md:text-6xl lg:text-8xl font-black tracking-tighter italic uppercase leading-tight">
                             OralCare<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-indigo-500">Sol.AI</span>
                         </h1>
@@ -252,9 +252,9 @@ export default function Dashboard() {
                                 { label: "Alert Incidents", value: stats.highRisk, icon: ShieldAlert, color: "text-red-500", sub: "Priority Cases" },
                                 { label: "Field Values", value: "Guide", icon: BookOpen, color: "text-emerald-500", sub: "Clinical Docs", action: () => navigate("/metadata-guide") },
                             ].map((stat, i) => (
-                                <div key={i} className={`bio-hologram p-10 group relative transition-all ${stat.action ? 'cursor-pointer hover:border-emerald-500/30' : ''}`} onClick={stat.action}>
+                                <div key={i} className={`bio-hologram p-6 md:p-10 group relative transition-all ${stat.action ? 'cursor-pointer hover:border-emerald-500/30' : ''}`} onClick={stat.action}>
                                     <div className="absolute inset-0 bio-grid-pattern opacity-10 group-hover:opacity-20 transition-opacity" />
-                                    <div className="relative z-10 space-y-6">
+                                    <div className="relative z-10 space-y-4 md:space-y-6">
                                         <div className="flex items-center justify-between">
                                             <stat.icon className={`h-8 w-8 ${stat.color} animate-float-subtle`} />
                                             {stat.action ? (
@@ -284,7 +284,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Analytic Vector Display */}
-                        <div className="bio-hologram !p-12 relative overflow-hidden">
+                        <div className="bio-hologram !p-6 md:!p-12 relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-8 opacity-5">
                                 <Binary className="h-32 w-32 " />
                             </div>
@@ -350,7 +350,7 @@ export default function Dashboard() {
                                     Array(3).fill(0).map((_, i) => <div key={i} className="p-12 animate-pulse bg-white/5 m-1" />)
                                 ) : history.length > 0 ? (
                                     history.map((h, i) => (
-                                        <div key={i} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-slate-50/50 dark:hover:bg-white/10 transition-all cursor-pointer group" onClick={() => {
+                                        <div key={i} className="p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8 hover:bg-slate-50/50 dark:hover:bg-white/10 transition-all cursor-pointer group" onClick={() => {
                                             sessionStorage.setItem("predictionResult", JSON.stringify(h));
                                             navigate("/predict/results");
                                         }}>
@@ -411,12 +411,12 @@ export default function Dashboard() {
                     {/* Right Column: Specialists & Vitals */}
                     <div className="lg:col-span-4 space-y-10">
                         {/* Specialized Oncology Matrix */}
-                        <div className="bio-hologram !p-0 group/matrix relative overflow-hidden h-[740px] flex flex-col">
+                        <div className="bio-hologram !p-0 group/matrix relative overflow-hidden h-[600px] md:h-[740px] flex flex-col">
                             <div className="absolute inset-0 bg-indigo-500/5 opacity-50 group-hover/matrix:opacity-100 transition-opacity pointer-events-none" />
 
-                            <div className="px-10 py-8 bg-indigo-600 relative overflow-hidden flex items-center justify-between shrink-0">
+                            <div className="px-6 md:px-10 py-6 md:py-8 bg-indigo-600 relative overflow-hidden flex items-center justify-between shrink-0">
                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)]" />
-                                <div className="flex items-center gap-4 relative z-10">
+                                <div className="flex items-center gap-3 md:gap-4 relative z-10">
                                     <div className="p-2 bg-white/10 rounded-lg backdrop-blur-md border border-white/20">
                                         <Stethoscope className="h-5 w-5 text-white" />
                                     </div>

@@ -49,25 +49,37 @@ app.url_map.strict_slashes = False
 # Trust the headers sent by Render's load balancer
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-# CORS hardening - Must be before Talisman to handle preflights
-def parse_origins():
-    if not FRONTEND_URL:
-        return "*"
-    # Split by comma, strip whitespace, AND strip trailing slashes
-    origins = [url.strip().rstrip('/') for url in FRONTEND_URL.split(",")]
-    # Add common local development variants just in case
+# CORS configuration - Allow production, preview, and local origins
+import re
+
+def get_cors_origins():
+    # Base origins from env
+    origins = [url.strip().rstrip('/') for url in FRONTEND_URL.split(",")] if FRONTEND_URL else []
     if "http://localhost:5173" not in origins:
         origins.append("http://localhost:5173")
     return origins
 
-cors_origins = parse_origins()
-logger.info(f"🔒 CORS Allowed Origins: {cors_origins}")
+def is_origin_allowed(origin):
+    if not origin:
+        return False
+    
+    allowed_bases = get_cors_origins()
+    if origin in allowed_bases:
+        return True
+    
+    # regex for Vercel previews: oral-care-.*-druvvs-projects.vercel.app
+    # also support the user's specific preview: oral-care-lgo41edg7-druvvs-projects.vercel.app
+    if re.match(r"https://oral-care-.*\.vercel\.app", origin):
+        return True
+        
+    logger.info(f"🚩 CORS rejected origin: {origin}")
+    return False
 
 CORS(app, 
      resources={r"/api/*": {
-         "origins": cors_origins,
+         "origins": is_origin_allowed,
          "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With", "Access-Control-Allow-Origin", "Origin", "Accept"]
      }}, 
      supports_credentials=True)
 

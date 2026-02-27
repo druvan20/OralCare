@@ -63,17 +63,17 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 sm:p-10">
-      <div className="absolute top-10 left-10 flex items-center gap-2 font-bold text-2xl tracking-tight text-white pointer-events-none">
-        <ShieldCheck className="h-8 w-8 text-violet-400" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-10">
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 flex items-center gap-2 font-bold text-xl md:text-2xl tracking-tight text-white pointer-events-none">
+        <ShieldCheck className="h-6 w-6 md:h-8 md:w-8 text-violet-400" />
         <span>OralCare<span className="text-violet-400 font-light ml-1">AI</span></span>
       </div>
 
       <div className="glass-card w-full max-w-[480px] animate-in fade-in zoom-in duration-500">
-        <div className="text-center mb-10">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-violet-400/80 mb-2">{greeting}</p>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Create Account</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Join our AI-powered screening network</p>
+        <div className="text-center mb-8 md:mb-10 px-2">
+          <p className="text-[10px] md:text-sm font-bold uppercase tracking-[0.2em] text-violet-400/80 mb-2">{greeting}</p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Create Account</h1>
+          <p className="text-xs md:text-base text-slate-500 dark:text-slate-400 mt-2 font-medium italic">Join our AI-powered screening network</p>
         </div>
 
         <div className="space-y-4">
