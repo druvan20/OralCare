@@ -26,7 +26,7 @@ export default function Metadata() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     patientName: "", tobacco: 0, alcohol: 0, betel: 0, hpv: 0, hygiene: 0, lesions: 0,
-    bleeding: 0, swallowing: 0, patches: 0, family: 0, age: 30,
+    bleeding: 0, swallowing: 0, patches: 0, family: 0, age: "",
   });
 
   const handleChange = (e) => {
@@ -138,8 +138,8 @@ export default function Metadata() {
                       name={f.key}
                       value={form[f.key]}
                       onChange={handleChange}
-                      placeholder={f.placeholder}
-                      className="w-full bg-transparent border-b border-slate-200 dark:border-white/10 py-2 text-xl font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:border-violet-500 transition-colors terminal-accent"
+                      placeholder={f.key === "age" ? "Enter your age" : f.placeholder}
+                      className="w-full bg-transparent border-b border-slate-200 dark:border-white/10 py-2 text-xl font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:border-violet-500 transition-colors terminal-accent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   )}
 
