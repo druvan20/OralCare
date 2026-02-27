@@ -31,14 +31,24 @@ export function AuthProvider({ children }) {
       // 1. Check direct localStorage or sessionStorage
       let token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-      // 2. Check hash (OAuth redirect)
+      // 2. Check query params (Magic Link redirect)
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryToken = searchParams.get("token");
+      if (queryToken) {
+        token = queryToken;
+        localStorage.setItem("token", token);
+        // Clean URL
+        const newUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState(null, "", newUrl);
+      }
+
+      // 3. Check hash (OAuth redirect)
       const hash = window.location.hash;
       if (hash && hash.includes("token=")) {
         const params = new URLSearchParams(hash.substring(1));
         const hashToken = params.get("token");
         if (hashToken) {
           token = hashToken;
-          // By default, OAuth tokens are treated as persistent since they come from external flow
           localStorage.setItem("token", token);
           window.history.replaceState(null, "", window.location.pathname);
         }

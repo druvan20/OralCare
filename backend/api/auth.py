@@ -311,8 +311,18 @@ def login():
         # Block unverified accounts
         if not user.get("email_verified", False):
             logger.warning(f"⚠️ Login blocked: email not verified for '{data['email']}'")
+            # Proactively resend verification link
+            token = secrets.token_urlsafe(32)
+            _get_verify_collection().update_one(
+                {"email": data['email'].strip().lower()},
+                {"$set": {"token": token, "expires_at": time.time() + VERIFY_EXPIRY_SECONDS}},
+                upsert=True
+            )
+            v_link = f"{request.url_root.rstrip('/')}/api/auth/verify-email?token={token}"
+            _send_verification_email(data['email'], v_link)
+            
             return jsonify({
-                "message": "Please verify your email before logging in. Check your inbox or resend the verification link.",
+                "message": "Please verify your email. We just sent a new link to your inbox.",
                 "email_unverified": True,
                 "email": user.get("email", "")
             }), 403
@@ -364,26 +374,37 @@ def resend_verify():
 
 @auth_bp.route("/verify-email", methods=["GET"])
 def verify_email():
-    """Validate token, set user email_verified=True, redirect to frontend login."""
+    """Validate token, set user email_verified=True, and Magic Login (Redirect to frontend with JWT)."""
     token = request.args.get("token")
     if not token:
-        return jsonify({"message": "Token required"}), 400
+        return redirect(f"{FRONTEND_URL}/login?message=Missing+token")
 
-    stored = _get_verify_collection().find_one({"token": token})
-    if not stored:
-        return redirect(f"{FRONTEND_URL}/login?message=Invalid+or+expired+verification+link")
-    
-    if time.time() > stored["expires_at"]:
+    verify_doc = _get_verify_collection().find_one({"token": token})
+    if not verify_doc:
+        return redirect(f"{FRONTEND_URL}/login?message=Invalid+or+expired+link")
+
+    if time.time() > verify_doc.get("expires_at", 0):
+        return redirect(f"{FRONTEND_URL}/login?message=Link+expired")
+
+    email = verify_doc["email"]
+    users = current_app.db.users
+    user = users.find_one({"email": email})
+
+    if user:
+        # Mark as verified
+        users.update_one({"_id": user["_id"]}, {"$set": {"email_verified": True}})
+        
+        # MAGIC LOGIN: Generate JWT and redirect to frontend
+        jwt_token = generate_token(str(user["_id"]))
+        redirect_url = f"{FRONTEND_URL}/login?token={jwt_token}"
+        
+        # Cleanup token
         _get_verify_collection().delete_one({"token": token})
-        return redirect(f"{FRONTEND_URL}/login?message=Verification+link+expired")
+        
+        logger.info(f"✅ User {email} magic logged in via link.")
+        return redirect(redirect_url)
     
-    email = stored["email"]
-    _get_verify_collection().delete_one({"token": token})
-
-    if current_app.db is not None:
-        users = current_app.db.users
-        users.update_one({"email": email}, {"$set": {"email_verified": True}})
-    return redirect(f"{FRONTEND_URL}/login?message=Email+verified.+You+can+sign+in+now.")
+    return redirect(f"{FRONTEND_URL}/login?message=User+not+found")
 
 
 # ----- Password Reset -----
@@ -411,17 +432,25 @@ def forgot_password():
             {"$set": {"reset_token": token, "reset_expires": time.time() + 3600}}
         )
 
-        reset_link = f"{FRONTEND_URL}/reset-password?token={token}"
+        # MAGIC RESET LINK: Use the verify-email endpoint logic to auto-verify and login
+        # We store this in verify collection too so it acts as a magic login
+        _get_verify_collection().update_one(
+            {"email": email},
+            {"$set": {"token": token, "expires_at": time.time() + 3600}},
+            upsert=True
+        )
+
+        magic_link = f"{request.url_root.rstrip('/')}/api/auth/verify-email?token={token}"
         
         try:
             from utils.email_sender import send_email
-            subject = "Reset your OralCare AI password"
-            text = f"Click the link to reset your password:\n\n{reset_link}\n\nValid for 1 hour.\n\n— OralCare AI"
-            html = f'<p>Click the link below to reset your password:</p><p><a href="{reset_link}">{reset_link}</a></p><p>Valid for 1 hour.</p><p>— OralCare AI</p>'
+            subject = "Magic Access: Login to OralCare AI"
+            text = f"Click the link below to access your account immediately (and verify your email):\n\n{magic_link}\n\nValid for 1 hour.\n\n— OralCare AI"
+            html = f'<p>Click the link below to access your account immediately (and verify your email):</p><p><b><a href="{magic_link}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Login Automatically</a></b></p><p>Valid for 1 hour.</p><p>— OralCare AI</p>'
             send_email(email, subject, text, html)
-            print(f"✅ Password reset email sent to {email}")
+            print(f"✅ Magic reset email sent to {email}")
         except Exception as e:
-            print(f"❌ Password reset email failed for {email}: {e}")
+            print(f"❌ Magic reset email failed for {email}: {e}")
             # We still return 200 to not leak existence, but log error
     else:
         print(f"🔍 Forgot password requested for non-existent email: {email}")
