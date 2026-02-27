@@ -335,6 +335,7 @@ def login():
 
 # ----- Email verification -----
 @auth_bp.route("/resend-verify", methods=["POST"])
+@auth_bp.route("/resend_verify", methods=["POST"])
 def resend_verify():
     """Resend email verification link via SMTP."""
     data = request.json or {}
