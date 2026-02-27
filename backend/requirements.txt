@@ -14,12 +14,5 @@ tensorflow
 flask-talisman
 flask-limiter
 scikit-learn
-opencv-python
+opencv-python-headless
 PyJWT
-flask
-flask-cors
-flask-talisman
-flask-limiter
-pymongo
-gunicorn
-certifi
