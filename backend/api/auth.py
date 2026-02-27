@@ -152,8 +152,18 @@ def google_callback():
             "name": name,
             "email": email,
             "password": b"",  # no password for OAuth-only users
+            "google_id": google_user.get("id"),
+            "email_verified": True,
+            "created_at": time.time()
         })
         user = users.find_one({"email": email})
+    else:
+        # Update existing user if they don't have google_id yet
+        if not user.get("google_id"):
+            users.update_one(
+                {"_id": user["_id"]}, 
+                {"$set": {"google_id": google_user.get("id"), "email_verified": True}}
+            )
 
     token = generate_token(str(user["_id"]))
     # Redirect to frontend with token in hash so it is not sent to server logs
@@ -277,13 +287,26 @@ def login():
         logger.info(f"✅ User found: {data['email']} (ID: {user['_id']})")
 
         # Handle password hash normalization
-        stored_password = user["password"]
+        stored_password = user.get("password")
+        
+        # Check if account has a password set (e.g. not a Google-only account)
+        if not stored_password or stored_password == b"":
+             return jsonify({
+                "message": "This account was created using Google Login. Please click 'Continue with Google' to sign in."
+            }), 401
+
         if isinstance(stored_password, str):
             stored_password = stored_password.encode('utf-8')
 
-        if not bcrypt.checkpw(data["password"].encode('utf-8'), stored_password):
-            logger.warning(f"❌ Login failed: Incorrect password for '{data['email']}'")
-            return jsonify({"message": "Invalid credentials"}), 401
+        try:
+            if not bcrypt.checkpw(data["password"].encode('utf-8'), stored_password):
+                logger.warning(f"❌ Login failed: Incorrect password for '{data['email']}'")
+                return jsonify({"message": "Invalid credentials"}), 401
+        except ValueError as e:
+            logger.error(f"❌ Password check error for {data['email']}: {e}")
+            return jsonify({
+                "message": "Account security issue. Please contact support or reset your password."
+            }), 500
 
         # Block unverified accounts
         if not user.get("email_verified", False):

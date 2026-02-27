@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Send, Command, Sparkles, Navigation, Heart, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../config";
 
 const CHIPS = [
     { label: "Start Screening", action: "/predict", icon: Sparkles },
@@ -34,7 +35,7 @@ export default function UrSolChat() {
         setIsTyping(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/ursol/chat", {
+            const res = await fetch(`${API_BASE}/api/ursol/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userMsg })

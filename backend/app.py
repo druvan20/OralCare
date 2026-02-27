@@ -6,7 +6,7 @@ import logging
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from config import MONGO_URI, UPLOAD_FOLDER, FRONTEND_URL
+from config import MONGO_URI, UPLOAD_FOLDER, FRONTEND_URL, BACKEND_URL
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ✅ CONFIGURE LOGGING TO SUPPORT EMOJIS ON WINDOWS
@@ -44,26 +44,38 @@ from api.ursol import ursol_bp
 
 # ✅ CREATE APP
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 # Trust the headers sent by Render's load balancer
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-# Security Headers (Talisman)
-# We allow inline scripts for the dev environment, but enforce HTTPS/HSTS in production
-Talisman(app, content_security_policy=None) 
-
-# Rate Limiting (Limiter)
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["200 per day", "50 per hour"],
-    storage_uri="memory://",
-)
-
-# CORS hardening
-# Use FRONTEND_URL from .env if available, otherwise allow localhost in dev
+# CORS hardening - Must be before Talisman to handle preflights
 cors_origin = FRONTEND_URL if FRONTEND_URL else "*"
 CORS(app, resources={r"/api/*": {"origins": cors_origin}}, supports_credentials=True)
+
+# Security Headers (Talisman)
+# ONLY enable for production (Render/HTTPS). 
+# Locally it forces HTTPS redirects and HSTS which breaks browsers on localhost.
+is_prod = os.environ.get("RENDER") == "true" or (BACKEND_URL and BACKEND_URL.startswith("https"))
+
+if is_prod:
+    Talisman(
+        app, 
+        content_security_policy=None, 
+        force_https=True, 
+        strict_transport_security=True,
+        session_cookie_secure=True
+    )
+else:
+    # Extremely permissive for local dev to avoid CORS/SSL preflight issues
+    Talisman(
+        app,
+        content_security_policy=None,
+        force_https=False,
+        strict_transport_security=False,
+        session_cookie_secure=False,
+        frame_options='ALLOWALL'
+    )
 
 # Create uploads folder
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -102,6 +114,7 @@ if MONGO_URI:
 else:
     logger.warning("⚠️ MONGO_URI not set in backend/.env")
 
+# Blueprints registration
 app.register_blueprint(predict_bp, url_prefix="/api/predict")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(history_bp, url_prefix="/api/history")
@@ -146,6 +159,6 @@ def test_db():
         }), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
     
