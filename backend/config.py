@@ -28,5 +28,6 @@ SMTP_USER = (os.getenv("SMTP_USER") or "").strip()
 SMTP_PASSWORD = (os.getenv("SMTP_PASSWORD") or "").strip()
 MAIL_FROM = os.getenv("MAIL_FROM", "noreply@solai.local")
 SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "0").lower() in ("1", "true", "yes")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
