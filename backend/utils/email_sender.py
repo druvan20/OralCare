@@ -22,7 +22,7 @@ def send_email(to_email, subject, body_text, body_html=None):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "from": f"OralCare AI <onboarding@resend.dev>" if "resend.dev" in RESEND_API_KEY else MAIL_FROM,
+                    "from": "OralCare AI <onboarding@resend.dev>",
                     "to": to_email,
                     "subject": subject,
                     "text": body_text,
