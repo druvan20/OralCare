@@ -143,10 +143,8 @@ def predict_metadata(metadata_dict):
 
 
 # ---------- API ----------
-@predict_bp.route("", methods=["POST", "OPTIONS"])
+@predict_bp.route("", methods=["POST"])
 def predict():
-    if request.method == "OPTIONS":
-        return "", 200
 
     if "image" not in request.files:
         return jsonify({"error": "Image file missing"}), 400

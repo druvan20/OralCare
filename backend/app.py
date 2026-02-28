@@ -60,9 +60,9 @@ def get_cors_origins():
     
     # Add regex patterns for Vercel previews and production
     return origins + [
-        re.compile(r"https://oral-care-.*\.vercel\.app"),
-        re.compile(r"https://oral-care-two\.vercel\.app"),
-        re.compile(r"https://oral-care-.*-druvvs-projects\.vercel\.app")
+        r"https://oral-care-.*\.vercel\.app",
+        r"https://oral-care-two\.vercel\.app",
+        r"https://oral-care-.*-druvvs-projects\.vercel\.app"
     ]
 
 CORS(app, 
