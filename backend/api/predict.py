@@ -6,11 +6,17 @@ import pickle
 import cv2
 import logging
 import numpy as np
-import tensorflow as tf
+import base64
 from datetime import datetime, timezone
 import pandas as pd
 from flask import Blueprint, request, jsonify, current_app
-from config import UPLOAD_FOLDER
+
+try:
+    import tflite_runtime.interpreter as tflite
+except ImportError:
+    import tensorflow.lite as tflite
+    
+# config import no longer needs UPLOAD_FOLDER but it's safe to keep
 
 logger = logging.getLogger(__name__)
 
@@ -29,10 +35,10 @@ predict_bp = Blueprint("predict", __name__)
 
 # ===== IMAGE MODEL =====
 MODEL_PATH = os.path.join(
-    PROJECT_ROOT, "ml", "image_model", "oral_cancer_cnn.h5"
+    PROJECT_ROOT, "ml", "image_model", "oral_cancer_cnn.tflite"
 )
 logger.info(f"🔍 Image model path: {MODEL_PATH}")
-image_model = None  # Lazy-loaded
+interpreter = None  # Lazy-loaded TFLite Interpreter
 
 IMG_SIZE = 224
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -45,20 +51,19 @@ META_MODEL_PATH = os.path.join(
     PROJECT_ROOT, "ml", "metadata_model", "metadata_risk_model.pkl"
 )
 metadata_model = None  # Lazy-loaded
-
-
 def get_image_model():
-    """Load and cache the image model on first use."""
-    global image_model
-    if image_model is None:
+    """Load and cache the TFLite interpreter on first use."""
+    global interpreter
+    if interpreter is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(
-                f"Image model not found at {MODEL_PATH}. "
-                f"Train and save 'oral_cancer_cnn.h5' (see ml/image_model/train_cnn.py)."
+                f"TFLite model not found at {MODEL_PATH}. "
+                f"Run ml/image_model/convert_to_tflite.py first."
             )
-        image_model = tf.keras.models.load_model(MODEL_PATH)
-        logger.info("✅ Image model loaded successfully")
-    return image_model
+        interpreter = tflite.Interpreter(model_path=MODEL_PATH)
+        interpreter.allocate_tensors()
+        logger.info("✅ TFLite Interpreter loaded successfully")
+    return interpreter
 
 
 def get_metadata_model():
@@ -81,14 +86,25 @@ def get_metadata_model():
 
 
 # ---------- HELPERS ----------
-def preprocess_image(img_path):
-    img = cv2.imread(img_path)
+def preprocess_image(img_bytes):
+    """Preprocess raw bytes to float32 TFLite input array."""
+    nparr = np.frombuffer(img_bytes, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     if img is None:
-        raise ValueError("Could not read image file")
+        raise ValueError("Could not decode image bytes")
     img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
     img = img / 255.0
-    img = np.expand_dims(img, axis=0)
-    return img
+    img = img.astype(np.float32) # TFLite requires exact typing
+    img_array = np.expand_dims(img, axis=0)
+    return img_array
+
+def run_tflite_inference(interpreter, img_array):
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    interpreter.set_tensor(input_details[0]['index'], img_array)
+    interpreter.invoke()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    return float(output_data[0][0])
 
 
 def predict_metadata(metadata_dict):
@@ -157,13 +173,17 @@ def predict():
         return jsonify({"error": "File type not allowed. Please upload PNG or JPG."}), 400
 
     try:
-        filename = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
-        save_path = os.path.join(UPLOAD_FOLDER, filename)
-        image.save(save_path)
+        # Read raw bytes in memory (no disk usage)
+        img_bytes = image.read()
+        
+        # Base64 encode for MongoDB (Data URL)
+        mimetype = image.mimetype or "image/jpeg"
+        b64_str = base64.b64encode(img_bytes).decode('utf-8')
+        data_url = f"data:{mimetype};base64,{b64_str}"
 
-        img_array = preprocess_image(save_path)
-        model = get_image_model()
-        image_prob = float(model.predict(img_array)[0][0])
+        img_array = preprocess_image(img_bytes)
+        interpreter = get_image_model()
+        image_prob = run_tflite_inference(interpreter, img_array)
 
         image_result = "Malignant" if image_prob >= 0.5 else "Benign"
 
@@ -209,7 +229,7 @@ def predict():
                 "final_decision": fusion_output["final_decision"],
                 "createdAt": datetime.now(timezone.utc).isoformat(),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-                "image_url": f"/uploads/{filename}"
+                "image_url": data_url # ✅ Saves Base64 directly, never 404s
             }
             if metadata:
                 record["metadata"] = metadata
