@@ -158,11 +158,11 @@ def predict():
     if not allowed_file(image.filename):
         return jsonify({"error": "File type not allowed. Please upload PNG or JPG."}), 400
 
-    filename = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
-    save_path = os.path.join(UPLOAD_FOLDER, filename)
-    image.save(save_path)
-
     try:
+        filename = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
+        save_path = os.path.join(UPLOAD_FOLDER, filename)
+        image.save(save_path)
+
         img_array = preprocess_image(save_path)
         model = get_image_model()
         image_prob = float(model.predict(img_array)[0][0])

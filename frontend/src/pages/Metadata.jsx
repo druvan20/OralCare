@@ -46,6 +46,12 @@ export default function Metadata() {
 
   const handleAnalyze = async () => {
     if (!image) return alert("Specimen missing from stack. Telemetry aborted.");
+
+    // Strict Validation for Age
+    if (form.age === "" || form.age === null) {
+      return alert("Diagnostic Error: Biological Age is required for accurate AI inference. Please provide a numeric value.");
+    }
+
     setLoading(true);
     try {
       const formData = new FormData();
