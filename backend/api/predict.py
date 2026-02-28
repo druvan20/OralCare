@@ -201,8 +201,10 @@ def predict():
         logger.error(f"Model missing: {e}")
         return jsonify({"error": str(e)}), 500
     except Exception as e:
+        import traceback
+        trace = traceback.format_exc()
         logger.exception("Prediction error")
-        return jsonify({"error": "Prediction failed"}), 500
+        return jsonify({"error": f"Prediction failed: {str(e)}", "trace": trace}), 500
     finally:
         # Cleanup file if needed or keep for history (here we keep for now as it was before)
         pass
