@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { predictCancer } from "../services/predictService";
 import Stepper from "../components/Stepper";
 import { Loader2, BookOpen, ArrowRight, Sparkles, ClipboardCheck, Database, Binary, Activity } from "lucide-react";
@@ -28,6 +28,13 @@ export default function Metadata() {
     patientName: "", tobacco: 0, alcohol: 0, betel: 0, hpv: 0, hygiene: 0, lesions: 0,
     bleeding: 0, swallowing: 0, patches: 0, family: 0, age: "",
   });
+
+  // Redirect back if explicitly refreshed without state
+  useEffect(() => {
+    if (!image) {
+      navigate("/predict", { replace: true });
+    }
+  }, [image, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
