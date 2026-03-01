@@ -1,4 +1,4 @@
-# OralCare AI (oral_pred)
+# OralCare AI 
 
 An industry-ready AI-powered screening tool for oral health, combining deep learning image analysis with clinical metadata risk assessment.
 
