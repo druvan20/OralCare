@@ -31,4 +31,4 @@ SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "0").lower() in ("1", "true", "yes")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
 BREVO_API_KEY = os.getenv("BREVO_API_KEY", "").strip()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()

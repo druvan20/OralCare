@@ -7,7 +7,7 @@ bcrypt
 requests
 certifi
 twilio
-google-genai
+groq
 pandas
 numpy
 tensorflow-cpu

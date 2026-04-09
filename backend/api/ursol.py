@@ -1,38 +1,26 @@
 from flask import Blueprint, request, jsonify, current_app
 from datetime import datetime
 try:
-    from google import genai
-    HAS_GEMINI = True
+    from groq import Groq
+    HAS_GROQ = True
 except ImportError:
-    HAS_GEMINI = False
+    HAS_GROQ = False
 
-from config import GEMINI_API_KEY
+from config import GROQ_API_KEY
 import re
 
 ursol_bp = Blueprint("ursol", __name__)
 
-# Configure Gemini if API Key and Package are available
-print(f"🤖 UrSol Initializing... (HAS_GEMINI={HAS_GEMINI}, KEY_PRESENT={bool(GEMINI_API_KEY)})")
-if HAS_GEMINI and GEMINI_API_KEY:
+# Configure Groq if API Key and Package are available
+print(f"🤖 UrSol Initializing... (HAS_GROQ={HAS_GROQ}, KEY_PRESENT={bool(GROQ_API_KEY)})")
+if HAS_GROQ and GROQ_API_KEY:
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-        # Dynamic Model Discovery with fix for attribute names
-        available_models = []
-        for m in client.models.list():
-            # In the new SDK, we check if the model is a generation model
-            # Usually naming convention or checking capabilities if present
-            if "gemini" in m.name.lower():
-                available_models.append(m.name)
-        
-        if available_models:
-            # Prefer flash if available, otherwise take first
-            GEMINI_MODEL = next((m for m in available_models if 'flash' in m.lower()), available_models[0])
-            print(f"✅ UrSol Gemini Core Linked (Model: {GEMINI_MODEL})")
-        else:
-            print("⚠️ No generation models found for this API key")
-            client = None
+        client = Groq(api_key=GROQ_API_KEY)
+        # Use Meta's powerful open-source Llama 3 model
+        AI_MODEL = "llama3-8b-8192"
+        print(f"✅ UrSol Groq Core Linked (Model: {AI_MODEL})")
     except Exception as e:
-        print(f"⚠️ UrSol Gemini Link Error: {e}")
+        print(f"⚠️ UrSol Groq Link Error: {e}")
         client = None
 else:
     print("📢 UrSol running in Heuristic Fallback Mode")
@@ -71,7 +59,7 @@ def chat():
     locations = ["mysore", "bangalore", "mumbai", "delhi", "jp nagar"]
     found_location = next((loc for loc in locations if loc in msg), None)
 
-    if client and GEMINI_API_KEY:
+    if client and GROQ_API_KEY:
         try:
             # Combine System Prompt + User Message + Clinical Context if location found
             context_addition = ""
@@ -83,15 +71,17 @@ def chat():
                     loc_info = MEDICAL_CONTEXT["locations"]["mysore"]
                 context_addition = f"\nSpecific Context: {loc_info}"
 
-            full_prompt = f"{SYSTEM_PROMPT}{context_addition}\n\nUser: {msg}\nUrSol:"
-            # Ensure model is a string and contents is passed correctly
-            response_data = client.models.generate_content(
-                model=GEMINI_MODEL, 
-                contents=full_prompt
+            # Fast generation call with Groq SDK
+            response_data = client.chat.completions.create(
+                model=AI_MODEL,
+                messages=[
+                    {"role": "system", "content": f"{SYSTEM_PROMPT}{context_addition}"},
+                    {"role": "user", "content": msg}
+                ]
             )
-            response = response_data.text
+            response = response_data.choices[0].message.content
         except Exception as e:
-            print(f"❌ Gemini Runtime Error: {str(e)}")
+            print(f"❌ Groq Runtime Error: {str(e)}")
             response = "I'm having trouble accessing my Large Language core, but I can still assist with platform navigation. Would you like to start a new screening or check your history?"
     else:
         # Fallback to Heuristic Engine if Gemini not configured
@@ -102,14 +92,14 @@ def chat():
                  loc_info = MEDICAL_CONTEXT["locations"]["mysore"]
              response = f"I see you're inquiring about facilities near **{loc_key.upper()}**. {loc_info} Would you like me to open the Hospital Discovery tool for you?"
         elif any(word in msg for word in ["hello", "hi", "hey"]):
-            response = "Greetings! I am **UrSol**, your clinical assistant. (Gemini core not active). I can help you navigate to 'Predict' or 'History'. How can I help?"
+            response = "Greetings! I am **UrSol**, your clinical assistant. (AI core disconnected). I can help you navigate to 'Predict' or 'History'. How can I help?"
         else:
-            response = "I'm in basic navigation mode. Please configure my Gemini AI core for advanced medical reasoning. For now, should I direct you to the screening portal?"
+            response = "I'm in basic navigation mode. Please configure my AI core for advanced medical reasoning. For now, should I direct you to the screening portal?"
 
     return jsonify({
         "response": response,
         "timestamp": datetime.utcnow().isoformat(),
-        "status": "GEMINI_AI_ACTIVE" if client else "HEURISTIC_ACTIVE"
+        "status": "GROQ_AI_ACTIVE" if client else "HEURISTIC_ACTIVE"
     })
 
 @ursol_bp.route("/feedback", methods=["POST"])
