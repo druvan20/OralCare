@@ -44,7 +44,11 @@ export default function History() {
       setError(null);
       setLoading(true);
       const data = await fetchHistory();
-      setHistory(Array.isArray(data) ? data : []);
+      if (Array.isArray(data)) {
+        setHistory([...data].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)));
+      } else {
+        setHistory([]);
+      }
     } catch (err) {
       setError(getErrorMessage(err));
       if (err.response?.status === 401) {
@@ -204,8 +208,26 @@ export default function History() {
                       }}
                     >
                       <td className="py-6 px-8">
-                        <div className="flex items-center gap-3">
-                          <Calendar className="h-4 w-4 text-slate-400 group-hover:text-violet-500 transition-colors" />
+                        <div className="flex items-center gap-4">
+                          <div className="relative h-10 w-10 md:h-12 md:w-12 rounded-lg overflow-hidden shrink-0 border border-slate-200 dark:border-white/10 group-hover:border-violet-500/50 transition-colors bg-slate-50 dark:bg-slate-800">
+                            {item.image_url ? (
+                              <img
+                                src={item.image_url.startsWith('data:') ? item.image_url : `${API_BASE}${item.image_url}`}
+                                alt="Scan"
+                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className="absolute inset-0 items-center justify-center flex"
+                              style={{ display: item.image_url ? 'none' : 'flex' }}
+                            >
+                              <Calendar className="h-4 w-4 md:h-5 md:w-5 text-slate-400 group-hover:text-violet-500 transition-colors" />
+                            </div>
+                          </div>
                           <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
                             {item.createdAt ? new Date(item.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : "—"}
                           </span>

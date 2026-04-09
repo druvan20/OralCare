@@ -159,7 +159,8 @@ export default function Dashboard() {
             try {
                 const data = await fetchHistory();
                 if (Array.isArray(data)) {
-                    setHistory(data.slice(0, 5));
+                    const sorted = [...data].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                    setHistory(sorted.slice(0, 5));
                     const total = data.length;
                     const highRisk = data.filter(h => h.final_decision === "Malignant" || (h.final_score && h.final_score >= 0.55)).length;
                     const scores = data.map(h => h.final_score).filter(s => s != null);
@@ -358,7 +359,7 @@ export default function Dashboard() {
                                                 <div className="relative h-20 w-20 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-200 dark:ring-white/10 shrink-0">
                                                     {h.image_url ? (
                                                         <img
-                                                            src={`${API_BASE}${h.image_url}`}
+                                                            src={h.image_url?.startsWith('data:') ? h.image_url : `${API_BASE}${h.image_url}`}
                                                             alt="Scan"
                                                             className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                                                             onError={(e) => {

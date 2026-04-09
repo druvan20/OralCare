@@ -17,7 +17,7 @@ def history(current_user):
         print(f"📊 Fetching history for user_id: {user_id}")
         print(f"📊 Collections available: {current_app.db.list_collection_names()}")
         
-        records = list(records_collection.find({"user_id": user_id}))
+        records = list(records_collection.find({"user_id": user_id}).sort("_id", -1))
         for r in records:
             r["_id"] = str(r["_id"])
         
