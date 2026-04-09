@@ -10,7 +10,7 @@ twilio
 google-genai
 pandas
 numpy
-tflite-runtime
+tensorflow-cpu
 flask-talisman
 flask-limiter
 scikit-learn
