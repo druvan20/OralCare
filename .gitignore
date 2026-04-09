@@ -37,9 +37,7 @@ frontend/public/uploads/
 # *.pkl
 *.pb
 *.onnx
-*.weights
-*.tflite
-
+# *.tflite
 # IDE & OS
 .vscode/
 .idea/
