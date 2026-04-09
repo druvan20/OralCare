@@ -1,7 +1,9 @@
 # OralCare AI 
 
-An industry-ready AI-powered screening tool for oral health, combining deep learning image analysis with clinical metadata risk assessment.
+## 🎯 About The Project
+Oral cancer is one of the most common and life-threatening cancers globally, but early detection significantly improves survival rates. **OralCare AI** was built to bridge the gap between patients and immediate preliminary diagnosis. By allowing users to upload images of oral cavities and provide clinical metadata, this tool acts as an accessible early-warning system.
 
+**Project Aim:** Our goal is to democratize preliminary oral health screening using an industry-ready AI platform. It combines deep learning image analysis with clinical metadata risk assessment to provide quick, reliable, and accessible insights, encouraging users to seek professional medical help early.
 ## 🚀 Key Features (Industry Standards)
 
 - **AI Fusion**: Combines CNN-based image prediction with random forest risk modeling.
@@ -25,19 +27,63 @@ oral_pred/
 
 ## ⚙️ Setup Instructions
 
-### Backend
+Follow these steps for any developer to get the code running locally on their machine.
 
-1.  Navigate to `backend/`.
-2.  Install dependencies: `pip install -r requirements.txt`.
-3.  Configure `.env` (Mongo URI, JWT Secret, SMTP settings).
-4.  Run: `python app.py`.
+### Prerequisites
+- **Python 3.9+**
+- **Node.js v16+**
+- **MongoDB** ( MongoDB Atlas Cluster)
+- **Groq API Key** (Required for the UrSol AI Chatbot)
+- **SMTP Email Credentials** (For user OTP/Email verification)
 
-### Frontend
+### 1. Backend Setup
 
-1.  Navigate to `frontend/`.
-2.  Install dependencies: `npm install`.
-3.  Configure `src/config.js` for API endpoint.
-4.  Run: `npm run dev`.
+1. Navigate to the backend directory:
+   ```bash
+   cd backend/
+   ```
+2. Create and activate a Virtual Environment (Recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+3. Install the required Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Configure your Environment Variables. Create a `.env` file in the `backend/` folder and add:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   GROQ_API_KEY=your_groq_api_key
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your_email@gmail.com
+   SMTP_PASSWORD=your_app_password
+   MAIL_FROM=your_email@gmail.com
+   FRONTEND_URL=http://localhost:5173
+   BACKEND_URL=http://localhost:5000
+   ```
+5. Start the backend Flask server:
+   ```bash
+   python app.py
+   ```
+
+### 2. Frontend Setup
+
+1. Open a new terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend/
+   ```
+2. Install the Node modules:
+   ```bash
+   npm install
+   ```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+4. Access the application in your browser at `http://localhost:5173`.
 
 ## 🛡️ Security & Compliance
 
@@ -48,13 +94,31 @@ oral_pred/
 
 ## 📜 API Documentation Summary
 
+### 🔐 Authentication & User Management
 | Endpoint | Method | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
-| `/api/auth/register` | POST | Register new user | No |
-| `/api/auth/login` | POST | Login with email/password | No |
-| `/api/predict` | POST | Upload image + metadata for AI analysis | Optional |
-| `/api/history` | GET | View past prediction results | Yes |
-| `/api/ursol` | POST | Chat with Ursol AI Assistant | Yes |
+| `/api/auth/register` | POST | Register a new user account | No |
+| `/api/auth/login` | POST | Login with email and password | No |
+| `/api/auth/google` | GET | Initiate Google OAuth SSO flow | No |
+| `/api/auth/facebook` | GET | Initiate Facebook OAuth SSO flow | No |
+| `/api/auth/verify-email` | GET | Verify user email with token | No |
+| `/api/auth/resend-verify`| POST | Resend verification email link | No |
+| `/api/auth/forgot-password`| POST | Request a password reset link | No |
+| `/api/auth/reset-password`| POST | Reset password using token | No |
+| `/api/auth/me` | GET | Get current logged-in user profile | Yes |
+| `/api/auth/update-profile`| PUT | Update user profile details | Yes |
+
+### 🔬 Prediction & Records
+| Endpoint | Method | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `/api/predict` | POST | Upload image + clinical data for cancer risk analysis | Optional |
+| `/api/history` | GET | View history of past screening results | Yes |
+
+### 🤖 UrSol AI Assistant
+| Endpoint | Method | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| `/api/ursol/chat` | POST | Chat with the Groq Llama-3 medical assistant | Optional |
+| `/api/ursol/feedback` | POST | Submit feedback on UrSol AI responses | Optional |
 
 ---
 *Disclaimer: This tool is for screening assistance and not a substitute for professional medical diagnosis.*
