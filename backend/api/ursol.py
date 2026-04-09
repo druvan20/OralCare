@@ -16,8 +16,8 @@ print(f"🤖 UrSol Initializing... (HAS_GROQ={HAS_GROQ}, KEY_PRESENT={bool(GROQ_
 if HAS_GROQ and GROQ_API_KEY:
     try:
         client = Groq(api_key=GROQ_API_KEY)
-        # Use Meta's powerful open-source Llama 3 model
-        AI_MODEL = "llama3-8b-8192"
+        # Use Meta's powerful open-source Llama 3.1 model
+        AI_MODEL = "llama-3.1-8b-instant"
         print(f"✅ UrSol Groq Core Linked (Model: {AI_MODEL})")
     except Exception as e:
         print(f"⚠️ UrSol Groq Link Error: {e}")
