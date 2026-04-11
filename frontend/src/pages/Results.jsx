@@ -27,7 +27,7 @@ import {
   Crosshair
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getHeuristicStage, generateMedicalReport } from "../utils/reportGenerator";
+import { getUrgencyLevel, generateMedicalReport } from "../utils/reportGenerator";
 
 export default function Results() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function Results() {
   // Risk heuristics
   const highRisk = result?.final_decision === "Malignant" || (result?.final_score ?? 0) >= 0.55;
   const riskPercent = Math.round((result?.final_score ?? 0) * 100);
-  const stageInfo = result ? getHeuristicStage(result.final_score, result.final_decision) : null;
+  const urgencyInfo = result ? getUrgencyLevel(result.final_score, result.final_decision) : null;
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
@@ -202,7 +202,7 @@ export default function Results() {
                     <span className="terminal-accent text-[9px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 italic">Core Status</span>
                     <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${highRisk ? "bg-red-500/20 text-red-500 dark:text-red-400 font-bold" : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
                       }`}>
-                      {stageInfo?.stage !== "N/A" ? stageInfo.stage : "Optimal"}
+                      {urgencyInfo?.level !== "N/A" ? urgencyInfo.level : "Optimal"}
                     </span>
                     <span className="px-4 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       SOL.AI Verified
@@ -213,7 +213,7 @@ export default function Results() {
                     {result.final_decision}
                   </h2>
                   <p className="text-xl font-medium text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed italic border-l-2 border-slate-200 dark:border-white/10 pl-6">
-                    {stageInfo?.desc || `Neural patterns indicate no immediate malignant features. Maintain longitudinal observation protocols.`}
+                    {urgencyInfo?.desc || `Neural patterns indicate no immediate malignant features. Maintain longitudinal observation protocols.`}
                   </p>
                 </div>
 
@@ -318,7 +318,7 @@ export default function Results() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white">Heuristic Insights</h3>
-                  <p className="text-[10px] font-black tracking-[0.3em] uppercase text-slate-500 mt-1">Staging Logic // SOL.AI V2</p>
+                  <p className="text-[10px] font-black tracking-[0.3em] uppercase text-slate-500 mt-1">Urgency Logic // SOL.AI V2</p>
                 </div>
               </div>
 
@@ -350,14 +350,14 @@ export default function Results() {
 
                 <div className="space-y-6">
                   <h4 className="text-sm font-black uppercase italic tracking-widest text-indigo-600 dark:text-indigo-400 flex items-center gap-3">
-                    <div className="h-1.5 w-6 bg-indigo-500" /> Staging Heuristics
+                    <div className="h-1.5 w-6 bg-indigo-500" /> Urgency Heuristics
                   </h4>
                   <div className="grid grid-cols-1 gap-3">
                     {[
-                      { s: "STAGE I", r: "0-59%", i: "MONITORING" },
-                      { s: "STAGE II", r: "60-69%", i: "BIOPSY REQ" },
-                      { s: "STAGE III", r: "70-84%", i: "IMMEDIATE" },
-                      { s: "STAGE IV", r: "85-100%", i: "URGENT" },
+                      { s: "MODERATE", r: "50-59%", i: "MONITORING" },
+                      { s: "ELEVATED", r: "60-69%", i: "CLINICAL CHK" },
+                      { s: "HIGH", r: "70-84%", i: "IMMEDIATE" },
+                      { s: "CRITICAL", r: "85-100%", i: "URGENT" },
                     ].map((st, i) => (
                       <div key={i} className="flex items-center justify-between p-4 holographic !p-4 border-slate-100 dark:border-white/5 transition-all bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 group">
                         <div>

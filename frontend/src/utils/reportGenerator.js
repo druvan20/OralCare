@@ -2,17 +2,17 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 /**
- * Heuristic mapping from AI fusion score to clinical screening stage
+ * Heuristic mapping from AI fusion score to clinical urgency level
  * @param {number} score - 0.0 to 1.0
  * @param {string} decision - "Malignant" or "Benign"
  */
-export const getHeuristicStage = (score = 0, decision = "Unknown") => {
-    if (decision === "Benign") return { stage: "N/A", color: [16, 185, 129], hex: "#10b981", desc: "No immediate pathological stage detected." };
+export const getUrgencyLevel = (score = 0, decision = "Unknown") => {
+    if (decision === "Benign") return { level: "N/A", color: [16, 185, 129], hex: "#10b981", desc: "No immediate pathological indicators detected." };
 
-    if (score >= 0.85) return { stage: "Stage IV", color: [220, 38, 38], hex: "#dc2626", desc: "Advanced indicators detected. Urgent oncological evaluation required." };
-    if (score >= 0.70) return { stage: "Stage III", color: [234, 88, 12], hex: "#ea580c", desc: "Progressive indicators detected. Immediate clinical assessment advised." };
-    if (score >= 0.60) return { stage: "Stage II", color: [245, 158, 11], hex: "#f59e0b", desc: "Moderate indicators detected. Specialized biopsy recommended." };
-    return { stage: "Stage I", color: [99, 102, 241], hex: "#6366f1", desc: "Localized indicators detected. Early-stage monitoring and referral required." };
+    if (score >= 0.85) return { level: "CRITICAL", color: [220, 38, 38], hex: "#dc2626", desc: "High model confidence. Urgent oncological evaluation required." };
+    if (score >= 0.70) return { level: "HIGH", color: [234, 88, 12], hex: "#ea580c", desc: "Progressive confidence. Immediate clinical assessment advised." };
+    if (score >= 0.60) return { level: "ELEVATED", color: [245, 158, 11], hex: "#f59e0b", desc: "Moderate confidence. Specialized clinical check recommended." };
+    return { level: "MODERATE", color: [99, 102, 241], hex: "#6366f1", desc: "Localized indicators detected. Monitoring and referral required." };
 };
 
 export const generateMedicalReport = (data) => {
@@ -20,7 +20,7 @@ export const generateMedicalReport = (data) => {
     if (!result) throw new Error("No screening data provided");
 
     const doc = new jsPDF();
-    const stageInfo = getHeuristicStage(result.final_score || 0, result.final_decision || "Unknown");
+    const urgencyInfo = getUrgencyLevel(result.final_score || 0, result.final_decision || "Unknown");
 
     // --- Modern Sleek Header ---
     doc.setFillColor(15, 23, 42); // Slate 900
@@ -69,7 +69,7 @@ export const generateMedicalReport = (data) => {
 
     // --- Primary Risk Assessment Banner ---
     const isMalignant = result.final_decision === "Malignant";
-    const bannerColor = stageInfo.color;
+    const bannerColor = urgencyInfo.color;
     
     doc.setFillColor(...bannerColor);
     doc.rect(20, 65, 170, 30, "F");
@@ -83,7 +83,7 @@ export const generateMedicalReport = (data) => {
 
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text(`Risk Factor: ${Math.round((result.final_score || 0) * 100)}% | Stage: ${stageInfo.stage}`, 25, 87);
+    doc.text(`Risk Factor: ${Math.round((result.final_score || 0) * 100)}% | Urgency: ${urgencyInfo.level}`, 25, 87);
 
     // --- Telemetry Metrics ---
     doc.setTextColor(15, 23, 42);
@@ -118,7 +118,7 @@ export const generateMedicalReport = (data) => {
     doc.setFont("helvetica", "bold");
     doc.setTextColor(15, 23, 42);
     currentY += 8;
-    doc.text(`Diagnostic Context: ${stageInfo.desc}`, 20, currentY);
+    doc.text(`Diagnostic Context: ${urgencyInfo.desc}`, 20, currentY);
     
     doc.setFont("helvetica", "normal");
     doc.setTextColor(71, 85, 105);
